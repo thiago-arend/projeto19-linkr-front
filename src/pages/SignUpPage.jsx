@@ -11,8 +11,11 @@ export default function SignUpPage() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [photoURL, setPhotoURL] = useState("");
+    const [buttonStatus, setbuttonStatus] = useState(0)
 
     const handleSignUp = async () => {
+
+        setbuttonStatus(1)
 
         const data = {
             email: email,
@@ -28,9 +31,11 @@ export default function SignUpPage() {
             try {
                 const response = await axios.post(`${process.env.REACT_APP_API_URL}/signup`, data);
                 console.log(response.data);
+                setbuttonStatus(0)
                 navigate('/');
             } catch (error) {
                 alert(`Error: ${error.message}`);
+                setbuttonStatus(0)
                 console.error(error.message);
             }
         }
@@ -51,7 +56,7 @@ export default function SignUpPage() {
                     <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     <Input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
                     <Input type="text" placeholder="Photo URL" value={photoURL} onChange={(e) => setPhotoURL(e.target.value)} />
-                    <SignUpButton onClick={handleSignUp}>Sign Up</SignUpButton>
+                    <SignUpButton buttonStatus={buttonStatus}  onClick={handleSignUp}>Sign Up</SignUpButton>
                 </SignUpForm>
             </SignUpDiv>
         </SingUpContainer>
@@ -97,9 +102,10 @@ const Input = styled.input`
 
 const SignUpButton = styled.button`
     padding: 10px 20px;
-    background-color: #007bff;
+    background-color: ${props => props.buttonStatus === 1 ? '#ccc' : '#007bff'};
     color: white;
     border: none;
     border-radius: 5px;
-    cursor: pointer;
+    cursor: ${props => props.buttonStatus === 1 ? 'not-allowed' : 'pointer'};
 `;
+
