@@ -10,10 +10,10 @@ export default function SignInPage() {
 
 
     /* Configurações da Página */
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
     /*const url = import.meta.env.VITE_API_URL;*/
-    const User = useContext(UserContext).UserData;
-    const setUser = useContext(UserContext).SetUserData;
+    //const User = useContext(UserContext).UserData;
+    //const setUser = useContext(UserContext).SetUserData;
 
     /* Token: existencia + uso */
 
@@ -27,7 +27,7 @@ export default function SignInPage() {
 
     return (
         <SingInContainer>
-            Texto Texte para tela de Login
+            
         </SingInContainer>
     );
 }

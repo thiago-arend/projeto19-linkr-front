@@ -2,25 +2,27 @@ import styled from "styled-components";
 import SignInPage from "./pages/SignInPage";
 import { createContext, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import UserProvider from "./contexts/userContext";
 
 export const UserContext = createContext();
 
 export default function App() {
-  let [UserData, SetUserData] = useState(null);
 
   return (
-    <UserContext.Provider value={{UserData, SetUserData}}>
-      <PagesContainer>
+    <UserProvider>
+      {/*<PagesContainer>*/}
         <BrowserRouter>
+          <Navbar />
           <Routes>
             <Route path="/" element={<SignInPage />} />
           </Routes>
         </BrowserRouter>
-      </PagesContainer>
-    </UserContext.Provider>
+      {/*</PagesContainer>*/}
+    </UserProvider>
   );
 }
 
-const PagesContainer = styled.main`
-  background-color: darkgray;
+const PagesContainer = styled.div`
+    background-color: red;
 `;
