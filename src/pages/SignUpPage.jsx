@@ -22,19 +22,19 @@ export default function SignUpPage() {
             photoUrl: photoURL,
         }
 
-
-        try {
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/signup`, data);
-            ///erro ao ler a coisa acima
-            console.log(response.data); 
-            navigate('/');
-
-
-
-        } catch (error) {
-            alert(error.message)
-            console.error(error.message);
+        if (!email || !username || !password || !confirmPassword) {
+            alert('Please fill in all fields.');
+        } else {
+            try {
+                const response = await axios.post(`${process.env.REACT_APP_API_URL}/signup`, data);
+                console.log(response.data);
+                navigate('/');
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+                console.error(error.message);
+            }
         }
+        
 
     }
 
