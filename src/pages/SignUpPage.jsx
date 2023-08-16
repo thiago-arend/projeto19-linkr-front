@@ -25,8 +25,8 @@ export default function SignUpPage() {
 
         try {
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/signup`, data);
-
-            console.log(response.data); // Trate a resposta da API conforme necessário
+            ///erro ao ler a coisa acima
+            console.log(response.data); 
             navigate('/');
 
 
