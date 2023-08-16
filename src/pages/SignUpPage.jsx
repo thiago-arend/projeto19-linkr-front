@@ -7,7 +7,7 @@ export default function SignUpPage() {
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
-    const [username, setUsername] = useState("");
+    const [name, setname] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [photoURL, setPhotoURL] = useState("");
@@ -19,18 +19,19 @@ export default function SignUpPage() {
 
         const data = {
             email: email,
-            username: username,
+            name: name,
             password: password,
             confirmPassword: confirmPassword,
             photoUrl: photoURL,
         }
 
-        if (!email || !username || !password || !confirmPassword) {
+        if (!email || !name || !password || !confirmPassword) {
             alert('Please fill in all fields.');
         } else {
             try {
                 const response = await axios.post(`${process.env.REACT_APP_API_URL}/signup`, data);
                 console.log(response.data);
+                alert(response.data)
                 setbuttonStatus(0)
                 navigate('/');
             } catch (error) {
@@ -52,11 +53,11 @@ export default function SignUpPage() {
             <SignUpDiv>
                 <SignUpForm>
                     <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                    <Input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                    <Input type="text" placeholder="Username" value={name} onChange={(e) => setname(e.target.value)} />
                     <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     <Input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
                     <Input type="text" placeholder="Photo URL" value={photoURL} onChange={(e) => setPhotoURL(e.target.value)} />
-                    <SignUpButton buttonStatus={buttonStatus} onClick={handleSignUp}>Sign Up</SignUpButton>
+                    <SignUpButton buttonstatus={buttonStatus} onClick={handleSignUp}>Sign Up</SignUpButton>
                     <p> <Link to="/">Switch back to login</Link></p>
                 </SignUpForm>
             </SignUpDiv>
@@ -108,10 +109,10 @@ const Input = styled.input`
 
 const SignUpButton = styled.button`
     padding: 10px 20px;
-    background-color: ${props => props.buttonStatus === 1 ? '#ccc' : '#007bff'};
+    background-color: ${props => props.buttonstatus === 1 ? '#ccc' : '#007bff'};
     color: white;
     border: none;
     border-radius: 5px;
-    cursor: ${props => props.buttonStatus === 1 ? 'not-allowed' : 'pointer'};
+    cursor: ${props => props.buttonstatus === 1 ? 'not-allowed' : 'pointer'};
 `;
 
