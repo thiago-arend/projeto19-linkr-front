@@ -39,7 +39,7 @@ export default function SignUpPage() {
                 console.error(error.message);
             }
         }
-        
+
 
     }
 
@@ -56,7 +56,8 @@ export default function SignUpPage() {
                     <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     <Input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
                     <Input type="text" placeholder="Photo URL" value={photoURL} onChange={(e) => setPhotoURL(e.target.value)} />
-                    <SignUpButton buttonStatus={buttonStatus}  onClick={handleSignUp}>Sign Up</SignUpButton>
+                    <SignUpButton buttonStatus={buttonStatus} onClick={handleSignUp}>Sign Up</SignUpButton>
+                    <p> <Link to="/">Switch back to login</Link></p>
                 </SignUpForm>
             </SignUpDiv>
         </SingUpContainer>
@@ -69,8 +70,8 @@ const SingUpContainer = styled.section`
     height: 100%;
     background-color: red;
     display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
+    justify-content: center; 
+    align-items: center;
 `;
 
 const GrayBox = styled.div`
@@ -84,14 +85,19 @@ const SignUpDiv = styled.div`
     width: 535px;
     background-color: blue;
     display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
+    justify-content: center; 
+    align-items: center; 
 `;
 
 const SignUpForm = styled.div`
     display: flex;
     flex-direction: column;
     gap: 10px;
+    text-align: center;
+
+    p a {
+        color: white;
+    }
 `;
 
 const Input = styled.input`
