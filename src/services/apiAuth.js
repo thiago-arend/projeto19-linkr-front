@@ -1,5 +1,5 @@
 import axios from "axios";
-//import dotev from "dotenv";
+//import dotenv from "dotenv";
 
 function signOut(token) {
     const auth = {
