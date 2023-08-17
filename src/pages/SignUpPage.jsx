@@ -3,6 +3,9 @@ import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
+
+const initialButtonStatus = 0;
+
 export default function SignUpPage() {
     const navigate = useNavigate();
 
@@ -11,7 +14,7 @@ export default function SignUpPage() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [photoURL, setPhotoURL] = useState("");
-    const [buttonStatus, setbuttonStatus] = useState(0)
+    const [buttonStatus, setbuttonStatus] = useState(initialButtonStatus)
 
     const handleSignUp = async () => {
 
@@ -27,6 +30,7 @@ export default function SignUpPage() {
 
         if (!email || !name || !password || !confirmPassword) {
             alert('Please fill in all fields.');
+            setbuttonStatus(0)
         } else {
             try {
                 const response = await axios.post(`${process.env.REACT_APP_API_URL}/signup`, data);
@@ -49,6 +53,10 @@ export default function SignUpPage() {
     return (
         <SingUpContainer>
             <GrayBox>
+                <LinkrDiv>
+                    <LinkrTitle>Linkr</LinkrTitle>
+                    <LinkrSubtitle>save, share and discover the best links on the web</LinkrSubtitle>
+                </LinkrDiv>
             </GrayBox>
             <SignUpDiv>
                 <SignUpForm>
@@ -67,7 +75,7 @@ export default function SignUpPage() {
 }
 
 const SingUpContainer = styled.section`
-    width: 1440px;
+    width: min-content;
     height: 100%;
     background-color: red;
     display: flex;
@@ -76,15 +84,52 @@ const SingUpContainer = styled.section`
 `;
 
 const GrayBox = styled.div`
-    width: 905px;
-    height: 1024px;
+    width: 605px;
+    height: 924px;
     background-color: #151515;
+    display: flex;
+    align-items: center;
+
+    p {
+        color: white;
+    }
 `;
 
+const LinkrDiv = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+`;
+
+const LinkrTitle = styled.p`
+    font-family: 'Passion One', sans-serif;
+    font-weight: 700;
+    font-size: 106px;
+    line-height: 117px;
+    letter-spacing: 0.05em;
+    text-align: left;
+    color: white;
+    margin: 0;
+`;
+
+const LinkrSubtitle = styled.p`
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 43px;
+    line-height: 64px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: white;
+    margin: 0;
+    padding-top: 10px; // Adding some space between title and subtitle
+`;
+
+
+
 const SignUpDiv = styled.div`
-    height: 1024px;
+    height: 924px;
     width: 535px;
-    background-color: blue;
+    background-color: #333333;
     display: flex;
     justify-content: center; 
     align-items: center; 
