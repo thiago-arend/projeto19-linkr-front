@@ -1,26 +1,29 @@
 import styled from "styled-components";
 import SignInPage from "./pages/SignInPage";
-import { createContext, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-export const UserContext = createContext();
+import Navbar from "./components/Navbar";
+import UserProvider from "./contexts/userContext";
+import HomePage from "./pages/HomePage";
+import HashtagPage from "./pages/HashtagPage";
 
 export default function App() {
-  let [UserData, SetUserData] = useState(null);
 
   return (
-    <UserContext.Provider value={{UserData, SetUserData}}>
-      <PagesContainer>
+    <UserProvider>
+      {/*<PagesContainer>*/}
         <BrowserRouter>
+          <Navbar />
           <Routes>
             <Route path="/" element={<SignInPage />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/hashtag/:hashtag" element={<HashtagPage />} />
           </Routes>
         </BrowserRouter>
-      </PagesContainer>
-    </UserContext.Provider>
+      {/*</PagesContainer>*/}
+    </UserProvider>
   );
 }
 
-const PagesContainer = styled.main`
-  background-color: darkgray;
+const PagesContainer = styled.div`
+    background-color: red;
 `;
