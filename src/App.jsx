@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import SignInPage from "./pages/SignInPage";
+import SignInPage from "./pages";
 import { createContext, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
