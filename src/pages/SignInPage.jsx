@@ -1,6 +1,6 @@
 import axios from "axios"
 import { styled } from "styled-components"
-import { UserContext } from "../App.jsx"
+import { UserContext } from "../contexts/userContext.jsx"
 import { Link, useNavigate } from "react-router-dom"
 import { useContext, useEffect, useState } from "react"
 
