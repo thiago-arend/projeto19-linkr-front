@@ -7,11 +7,12 @@ import { useContext, useEffect, useState } from "react"
 export default function SignInPage() {
   const [login, setLogin] = useState({})
   const navigate = useNavigate()
-  const { setToken, setUserId } = useContext(UserContext)
+  const { setUser, user } = useContext(UserContext)
   const [isButtonDisabled, setIsButtonDisabled] = useState(false)
+  //console.log(login);
 
   useEffect(() => {
-    if (localStorage.getItem("token")) navigate("/timeline")
+    if (user) navigate("/timeline")
   }, [])
 
   const handleChange = (event) => {
@@ -33,17 +34,16 @@ export default function SignInPage() {
   }
 
   function signIn() {
-    axios.post(`${process.env.REACT_APP_API_URL}/`, login)
+    axios.post(`${process.env.REACT_APP_API_URL}/signin`, login)
       .then(res => {
-        setToken(res.data.token)
-        setUserId(res.data.userId)
-        localStorage.setItem("token", res.data.token)
-        localStorage.setItem("user", res.data.userId)
+        setUser(res.data); // setUser({token, userId});
+        localStorage.removeItem("user");
+        localStorage.setItem("user", JSON.stringify(res.data));
         navigate("/timeline")
       })
-      .catch(err => alert(err.response.data))
+      .catch(err => alert("Incorrect e-mail or password!"))
   }
-  
+
   return (
     <SingInContainer>
 

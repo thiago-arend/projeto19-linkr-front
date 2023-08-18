@@ -9,6 +9,7 @@ export default function Navbar() {
     const navigate = useNavigate();
     const [showLogoff, setShowLogoff] = useState(false);
     const { setUser, user } = useContext(UserContext);
+    const location = useLocation().pathname;
 
     const useOutsideClick = (callback) => {
         const ref = useRef();
@@ -46,6 +47,7 @@ export default function Navbar() {
             .then(() => {
                 localStorage.removeItem("user");
                 setUser(undefined);
+                setShowLogoff(false);
                 navigate("/");
             })
             .catch((err) => {
@@ -54,6 +56,8 @@ export default function Navbar() {
     }
 
     return (
+        ((location !== "/") && 
+        (location !== "/cadastro")) &&
         <NavbarContainer>
             <NavbarTitle>linkr</NavbarTitle>
             <LogoutContainer ref={ref}>
