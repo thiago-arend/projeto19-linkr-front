@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import styled from "styled-components";
 import apiHashtag from "../services/apiHashtag";
 import TrendingHashtag from "../components/TrendingHashtag";
 
-export default function HomePage() {
-    const [trendingHashtags, setTrendingHashtags] = useState(undefined);
+export default function HomePage(props) {
+    const { trendingHashtags, setTrendingHashtags, setPosts } = props;
 
     useEffect(() => {
         apiHashtag.getTrendingHashtags()
@@ -18,22 +18,27 @@ export default function HomePage() {
 
     return (
         <PageContainer>
-            <ContentContainer>
-                <TimelineContainer></TimelineContainer>
-                <TrendingContainer>
-                    <TrendingHeader>
-                        <h1>trending</h1>
-                        <div></div>
-                    </TrendingHeader>
-                    <TrendingContent>
-                        <ol>
-                            {trendingHashtags && trendingHashtags.map(h => <TrendingHashtag
-                                                                                key={h.hashtag}
-                                                                                hashtag={h} />)}
-                        </ol>
-                    </TrendingContent>
-                </TrendingContainer>
-            </ContentContainer>
+
+            <SuperContent>
+                <TimelineTitle>timeline</TimelineTitle>
+                <ContentContainer>
+                    <TimelineContainer></TimelineContainer>
+                    <TrendingContainer>
+                        <TrendingHeader>
+                            <h1>trending</h1>
+                            <div></div>
+                        </TrendingHeader>
+                        <TrendingContent>
+                            <ol>
+                                {trendingHashtags && trendingHashtags.map(h => <TrendingHashtag
+                                    key={h.hashtag}
+                                    hashtag={h}
+                                    setPosts={setPosts} />)}
+                            </ol>
+                        </TrendingContent>
+                    </TrendingContainer>
+                </ContentContainer>
+            </SuperContent>
         </PageContainer>
     );
 }
@@ -110,4 +115,18 @@ const ContentContainer = styled.div`
     display: flex;
     justify-content: space-between;
     width: 1040px;
+`;
+
+const SuperContent = styled.div`
+    
+`;
+
+const TimelineTitle = styled.div`
+    width: 651px;
+    height: 100px;
+
+    font-family: 'Oswald', sans-serif;
+    font-size: 43px;
+    font-weight: bold;
+    color: #FFF;
 `;
