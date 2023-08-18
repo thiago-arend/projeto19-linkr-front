@@ -23,6 +23,7 @@ export default function App() {
             <Route path="/" element={<SignInPage />} />
             <Route path="/timeline" element={<TimelinePage setPosts={setPosts} trendingHashtags={trendingHashtags} setTrendingHashtags={setTrendingHashtags}/>} />
             <Route path="/hashtag/:hashtag" element={<HashtagPage posts={posts} setPosts={setPosts} trendingHashtags={trendingHashtags} setTrendingHashtags={setTrendingHashtags}/>} />
+            <Route path="/signup" element={<SignUpPage />} />
           </Routes>
         </BrowserRouter>
       {/*</PagesContainer>*/}
