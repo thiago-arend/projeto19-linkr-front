@@ -6,5 +6,11 @@ function getTrendingHashtags() {
     return promise;
 }
 
-const apiHashtag = { getTrendingHashtags };
+function getPostsByHashtag(hashtag) {
+
+    const promise = axios.get(`${process.env.REACT_APP_API_URL}/hashtag/${hashtag}`);
+    return promise;
+}
+
+const apiHashtag = { getTrendingHashtags, getPostsByHashtag };
 export default apiHashtag;
