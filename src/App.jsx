@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import SignInPage from "./pages/SignInPage";
+import SignUpPage from "./pages/SignUpPage"; 
 import { createContext, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
@@ -30,5 +31,5 @@ export default function App() {
 }
 
 const PagesContainer = styled.div`
-    background-color: red;
+  background-color: red;
 `;
