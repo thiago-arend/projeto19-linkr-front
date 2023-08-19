@@ -1,10 +1,13 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import styled from "styled-components";
 import apiHashtag from "../services/apiHashtag";
 import TrendingHashtag from "../components/TrendingHashtag";
+import { UserContext } from "../contexts/userContext";
+import perfilImage from "../assets/profile-image.jpeg";
 
 export default function HomePage(props) {
     const { trendingHashtags, setTrendingHashtags, setPosts } = props;
+    const { user, setUser } = useContext(UserContext)
 
     useEffect(() => {
         apiHashtag.getTrendingHashtags()
@@ -22,7 +25,21 @@ export default function HomePage(props) {
             <SuperContent>
                 <TimelineTitle>timeline</TimelineTitle>
                 <ContentContainer>
-                    <TimelineContainer></TimelineContainer>
+
+                    <TimelineContainer>
+                        <PublishContainer>
+                            <AvatarContainer><img src={perfilImage} /></AvatarContainer>
+                            <PostCreationContainer>
+                                <h1>What are you going to share today?</h1>
+                                <form>
+                                    <input required placeholder="http:// ..." />
+                                    <input placeholder="Awesome article about #javascript" />
+                                    <button>Publish</button>
+                                </form>
+                            </PostCreationContainer>
+                        </PublishContainer>
+                    </TimelineContainer>
+
                     <TrendingContainer>
                         <TrendingHeader>
                             <h1>trending</h1>
@@ -130,3 +147,81 @@ const TimelineTitle = styled.div`
     font-weight: bold;
     color: #FFF;
 `;
+
+const PublishContainer = styled.div`
+  width: 31.822916666666668vw;
+  height: 23.22222222222222vh;
+  border-radius: 16px;
+  display: flex;
+  justify-content: space-around;
+  background: #ffffff;
+`
+
+const AvatarContainer = styled.div`
+  height:  23.22222222222222vh;
+  width: 3.0729166666666665vw; 
+  
+  img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-top: 12px;
+    margin-left: 8px;
+  }
+`
+
+const PostCreationContainer = styled.div`
+  margin-right: 10px;
+  width: 26.145833333333332vw;
+  height: 23.22222222222222vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+  h1 {
+    font-family: Lato;
+    font-size: 20px;
+    font-weight: 300;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #707070;
+    margin-top: 10px;
+  }
+
+  input {
+    width: 26.145833333333332vw;
+    height: 7.333333333333333vh;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    border: none;
+    background: #efefef;
+    font-family: Lato;
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #949494;
+  }
+
+  input:first-child {
+    height: 3.3333333333333335vh;
+  }
+
+  button {
+    width: 112px;
+    height: 31px;
+    border-radius: 5px;
+    border: none;
+    background: #1877F2;
+    font-family: Lato;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 17px;
+    letter-spacing: 0em;
+    text-align: center;
+    color: #FFFFFF;
+    float: right;
+  }
+`
