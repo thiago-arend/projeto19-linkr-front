@@ -22,7 +22,7 @@ export default function SignUpPage() {
 
         const data = {
             email: email,
-            name: name,
+            username: name,
             password: password,
             confirmPassword: confirmPassword,
             photoUrl: photoURL,

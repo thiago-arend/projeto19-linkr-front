@@ -34,7 +34,7 @@ export default function SignInPage() {
   }
 
   function signIn() {
-    axios.post(`${process.env.REACT_APP_API_URL}/signin`, login)
+    axios.post(`${process.env.REACT_APP_API_URL}/`, login)
       .then(res => {
         setUser(res.data); // setUser({token, userId});
         localStorage.removeItem("user");
