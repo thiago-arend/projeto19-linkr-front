@@ -13,8 +13,6 @@ export default function Navbar() {
     const [userImage, setUserImage] = useState(undefined);
 
     useEffect(() => {
-        if (!user) return;
-
         apiAuth.getUser(user.token)
             .then((res) => {
                 setUserImage(res.data.photoUrl);
@@ -55,23 +53,13 @@ export default function Navbar() {
     }
 
     function logOff() {
-
-        /* --- OBS: Essa função depende da implementação do login --- */
-        apiAuth.signOut(user.token)
-            .then(() => {
-                localStorage.removeItem("user");
-                setUser(undefined);
-                setShowLogoff(false);
-                navigate("/");
-            })
-            .catch((err) => {
-                console.log(err.response.data);
-            });
+        localStorage.removeItem("user");
+        setUser(undefined);
+        setShowLogoff(false);
+        navigate("/");
     }
 
     return (
-        ((location !== "/") &&
-            (location !== "/signup")) &&
         <NavbarContainer>
             <NavbarTitle>linkr</NavbarTitle>
             <LogoutContainer ref={ref}>

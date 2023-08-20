@@ -16,7 +16,6 @@ export default function App() {
   return (
     <UserProvider>
         <BrowserRouter>
-          <Navbar />
           <Routes>
             <Route path="/" element={<SignInPage />} />
             <Route path="/timeline" element={<TimelinePage setPosts={setPosts} trendingHashtags={trendingHashtags} setTrendingHashtags={setTrendingHashtags}/>} />
