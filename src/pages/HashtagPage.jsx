@@ -3,6 +3,7 @@ import styled from "styled-components";
 import apiHashtag from "../services/apiHashtag";
 import { useLocation } from "react-router-dom";
 import TrendingHashtag from "../components/TrendingHashtag";
+import Navbar from "../components/Navbar";
 
 export default function HashtagPage(props) {
     const { trendingHashtags, setTrendingHashtags, posts, setPosts } = props;
@@ -28,29 +29,32 @@ export default function HashtagPage(props) {
     }, []);
 
     return (
-        <PageContainer>
+        <>
+            <Navbar />
+            <PageContainer>
 
-            <SuperContent>
-                <HashtagTitle># {hashtag}</HashtagTitle>
-                <ContentContainer>
-                    <TimelineContainer></TimelineContainer>
-                    <TrendingContainer>
-                        <TrendingHeader>
-                            <h1>trending</h1>
-                            <div></div>
-                        </TrendingHeader>
-                        <TrendingContent>
-                            <ol>
-                                {trendingHashtags && trendingHashtags.map(h => <TrendingHashtag
-                                    setPosts={setPosts}
-                                    key={h.hashtag}
-                                    hashtag={h} />)}
-                            </ol>
-                        </TrendingContent>
-                    </TrendingContainer>
-                </ContentContainer>
-            </SuperContent>
-        </PageContainer>
+                <SuperContent>
+                    <HashtagTitle># {hashtag}</HashtagTitle>
+                    <ContentContainer>
+                        <TimelineContainer></TimelineContainer>
+                        <TrendingContainer>
+                            <TrendingHeader>
+                                <h1>trending</h1>
+                                <div></div>
+                            </TrendingHeader>
+                            <TrendingContent>
+                                <ol>
+                                    {trendingHashtags && trendingHashtags.map(h => <TrendingHashtag
+                                        setPosts={setPosts}
+                                        key={h.hashtag}
+                                        hashtag={h} />)}
+                                </ol>
+                            </TrendingContent>
+                        </TrendingContainer>
+                    </ContentContainer>
+                </SuperContent>
+            </PageContainer>
+        </>
     );
 }
 
@@ -116,14 +120,13 @@ const TrendingHeader = styled.div`
 `;
 
 const SuperContent = styled.div`
-    
+    height: 500px;
 `;
 
 const TimelineContainer = styled.div`
     background-color: red;
     width: 611px;
     height: 600px;
-    padding: 20px;
 `;
 
 const ContentContainer = styled.div`

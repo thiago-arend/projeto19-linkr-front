@@ -8,6 +8,7 @@ import defaultAvatar from "../assets/default-avatar.jpg";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import apiAuth from "../services/apiAuth";
+import Navbar from "../components/Navbar";
 
 
 export default function HomePage(props) {
@@ -46,95 +47,100 @@ export default function HomePage(props) {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-      
+
         setIsButtonDisabled(true);
-      
+
         try {
-          await publishPost();
+            await publishPost();
         } finally {
-          setIsButtonDisabled(false);
-          setPost({});
+            setIsButtonDisabled(false);
+            setPost({});
         }
-      };
-      
-      async function publishPost() {
+    };
+
+    async function publishPost() {
         try {
-          const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      
-          const response = await axios.post(
-            `${process.env.REACT_APP_API_URL}/timeline`,
-            { ...post, userId: user.userId },
-            config
-          );
-      
-          console.log("Ok!");
-          navigate("/timeline");
+            const config = { headers: { Authorization: `Bearer ${user.token}` } };
+
+            const response = await axios.post(
+                `${process.env.REACT_APP_API_URL}/timeline`,
+                { ...post, userId: user.userId },
+                config
+            );
+
+            console.log("Ok!");
+            navigate("/timeline");
         } catch (err) {
-          alert("There was an error when publishing your link!");
+            alert("There was an error when publishing your link!");
         }
-      }
-      
+    }
+
 
     return (
-        <PageContainer>
+        <>
+            <Navbar />
+            <PageContainer>
 
-            <SuperContent>
-                <TimelineTitle>timeline</TimelineTitle>
-                <ContentContainer>
-                    <TimelineContainer>
-                        <PublishContainer>
-                            <AvatarContainer><img src={userImage ? userImage : defaultAvatar} /></AvatarContainer>
-                            <PostCreationContainer>
-                                <h1>What are you going to share today?</h1>
-                                <form onSubmit={handleSubmit}>
-                                    <input
-                                        required type="url"
-                                        placeholder="http:// ..."
-                                        name="url" 
-                                        value={post.url || ""}
-                                        onChange={handleChange}
-                                        disabled={isButtonDisabled}
-                                    />
-                                    <input
-                                        type="description"
-                                        placeholder="Awesome article about #javascript"
-                                        name="description" 
-                                        value={post.description || ""}
-                                        onChange={handleChange}
-                                        disabled={isButtonDisabled}
-                                    />
-                                    <button
-                                        type="submit"
-                                        disabled={isButtonDisabled}
-                                    >{isButtonDisabled ? "Publishing..." : "Publish"}
-                                    </button>
-                                </form>
-                            </PostCreationContainer>
-                        </PublishContainer>
-                      <Post 
-                        postOwner={"Juvenal Juvêncio"} 
-                        postUrl={"www.google.com"} 
-                        postDescription={"Olha que Url Legal!!!!"} 
-                        numberOfLikes={13} 
-                        likedByViewer={false}/>
-                    </TimelineContainer>
-                    <TrendingContainer>
-                        <TrendingHeader>
-                            <h1>trending</h1>
-                            <div></div>
-                        </TrendingHeader>
-                        <TrendingContent>
-                            <ol>
-                                {trendingHashtags && trendingHashtags.map(h => <TrendingHashtag
-                                    key={h.hashtag}
-                                    hashtag={h}
-                                    setPosts={setPosts} />)}
-                            </ol>
-                        </TrendingContent>
-                    </TrendingContainer>
-                </ContentContainer>
-            </SuperContent>
-        </PageContainer>
+                <SuperContent>
+                    <TimelineTitle>timeline</TimelineTitle>
+                    <ContentContainer>
+                        <TimelineContainer>
+                            <PublishContainer>
+                                <AvatarContainer><img src={userImage ? userImage : defaultAvatar} /></AvatarContainer>
+                                <PostCreationContainer>
+                                    <h1>What are you going to share today?</h1>
+                                    <form onSubmit={handleSubmit}>
+                                        <input
+                                            required type="url"
+                                            placeholder="http:// ..."
+                                            name="url"
+                                            value={post.url || ""}
+                                            onChange={handleChange}
+                                            disabled={isButtonDisabled}
+                                        />
+                                        <input
+                                            type="description"
+                                            placeholder="Awesome article about #javascript"
+                                            name="description"
+                                            value={post.description || ""}
+                                            onChange={handleChange}
+                                            disabled={isButtonDisabled}
+                                        />
+                                        <button
+                                            type="submit"
+                                            disabled={isButtonDisabled}
+                                        >{isButtonDisabled ? "Publishing..." : "Publish"}
+                                        </button>
+                                    </form>
+                                </PostCreationContainer>
+                            </PublishContainer>
+                            <PostsContainer>
+                                <Post
+                                    postOwner={"Juvenal Juvêncio"}
+                                    postUrl={"www.google.com"}
+                                    postDescription={"Olha que Url Legal!!!!"}
+                                    numberOfLikes={13}
+                                    likedByViewer={false} />
+                            </PostsContainer>
+                        </TimelineContainer>
+                        <TrendingContainer>
+                            <TrendingHeader>
+                                <h1>trending</h1>
+                                <div></div>
+                            </TrendingHeader>
+                            <TrendingContent>
+                                <ol>
+                                    {trendingHashtags && trendingHashtags.map(h => <TrendingHashtag
+                                        key={h.hashtag}
+                                        hashtag={h}
+                                        setPosts={setPosts} />)}
+                                </ol>
+                            </TrendingContent>
+                        </TrendingContainer>
+                    </ContentContainer>
+                </SuperContent>
+            </PageContainer>
+        </>
     );
 }
 
@@ -201,11 +207,15 @@ const TrendingHeader = styled.div`
 
 const TimelineContainer = styled.div`
     display: flex;
-    justify-content: center;
-    background-color: red;
-    width: 611px;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 700px;
     height: 600px;
-    padding: 20px;
+    padding-bottom: 20px;
+`;
+
+const PostsContainer = styled.div`
+    height: 100%;
 `;
 
 const ContentContainer = styled.div`
@@ -215,7 +225,7 @@ const ContentContainer = styled.div`
 `;
 
 const SuperContent = styled.div`
-    
+    height: 500px;
 `;
 
 const TimelineTitle = styled.div`
@@ -229,12 +239,13 @@ const TimelineTitle = styled.div`
 `;
 
 const PublishContainer = styled.div`
-  width: 31.822916666666668vw;
-  height: 23.22222222222222vh;
+  width: 100%;
+  min-height: 209px;
   border-radius: 16px;
   display: flex;
   justify-content: space-around;
   background: #ffffff;
+  margin-bottom: 30px;
 `
 
 const AvatarContainer = styled.div`

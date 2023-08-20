@@ -28,14 +28,10 @@ export default function Post(props) {
 
 }
 const PostContainer = styled.div`
-    * {
-        box-sizing: border-box;
-    }
     gap: 10px;
-    width: 611px;
+    width: 100%;
     height: 276px;
     border: 1px;
-    padding: 20px;
     border-radius: 10px;
     background-color: #171717;
     
@@ -57,7 +53,6 @@ const LeftSide = styled.div`
         height: 50px;
         border-radius: 100%;
     }
-    border: 1px solid red;
     ion-icon {
         color: ${props => props.liked === true? 'white' : 'red'};
         font-size: 40px;
@@ -77,7 +72,6 @@ const RightSide = styled.div`
     align-items: flex-start;
     width: 100%;
     height: 100%;
-    border: 1px solid blue;
     h1 {
         font-family: Lato;
         font-size: 19px;
