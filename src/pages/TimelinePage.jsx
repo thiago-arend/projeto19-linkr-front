@@ -1,3 +1,4 @@
+import Post from "../components/Post";
 import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import apiHashtag from "../services/apiHashtag";
@@ -59,7 +60,6 @@ export default function HomePage(props) {
             <SuperContent>
                 <TimelineTitle>timeline</TimelineTitle>
                 <ContentContainer>
-
                     <TimelineContainer>
                         <PublishContainer>
                             <AvatarContainer><img src={perfilImage} /></AvatarContainer>
@@ -88,8 +88,13 @@ export default function HomePage(props) {
                                 </form>
                             </PostCreationContainer>
                         </PublishContainer>
+                      <Post 
+                        postOwner={"Juvenal Juvêncio"} 
+                        postUrl={"www.google.com"} 
+                        postDescription={"Olha que Url Legal!!!!"} 
+                        numberOfLikes={13} 
+                        likedByViewer={false}/>
                     </TimelineContainer>
-
                     <TrendingContainer>
                         <TrendingHeader>
                             <h1>trending</h1>
@@ -172,6 +177,8 @@ const TrendingHeader = styled.div`
 `;
 
 const TimelineContainer = styled.div`
+    display: flex;
+    justify-content: center;
     background-color: red;
     width: 611px;
     height: 600px;
