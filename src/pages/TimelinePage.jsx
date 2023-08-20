@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import Post from "../components/Post";
 import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";

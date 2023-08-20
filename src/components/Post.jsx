@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
-import img from "../assets/profile-image.jpeg"
+import img from "../assets/default-avatar.jpg"
 
 export default function Post(props) {
     let { 
