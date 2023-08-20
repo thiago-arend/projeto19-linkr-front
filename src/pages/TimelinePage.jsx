@@ -1,15 +1,22 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import apiHashtag from "../services/apiHashtag";
 import TrendingHashtag from "../components/TrendingHashtag";
 import { UserContext } from "../contexts/userContext";
 import perfilImage from "../assets/profile-image.jpeg";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function HomePage(props) {
     const { trendingHashtags, setTrendingHashtags, setPosts } = props;
-    const { user, setUser } = useContext(UserContext)
+    const { user } = useContext(UserContext)
+    const navigate = useNavigate()
+    const [post, setPost] = useState({})
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false)
 
     useEffect(() => {
+        if (!user) return navigate("/")
+
         apiHashtag.getTrendingHashtags()
             .then((res) => {
                 setTrendingHashtags(res.data);
@@ -18,6 +25,33 @@ export default function HomePage(props) {
                 console.log(err.response.data);
             });
     }, []);
+
+    const handleChange = (event) => {
+        const name = event.target.name
+        const value = event.target.value
+        setPost(values => ({ ...values, [name]: value }))
+    }
+
+    const handleSubmit = async (event) => {
+        event.preventDefault()
+
+        setIsButtonDisabled(true)
+
+        try {
+            await publishPost()
+        } finally {
+            setIsButtonDisabled(false)
+        }
+    }
+
+    function publishPost() {
+        axios.post(`${process.env.REACT_APP_API_URL}/timeline`, { ...post, userId: user.userId })
+            .then(res => {
+                navigate("/timeline")
+            })
+            .catch(err => alert("There was an error when publishing your link!"))
+    }
+
 
     return (
         <PageContainer>
@@ -31,10 +65,26 @@ export default function HomePage(props) {
                             <AvatarContainer><img src={perfilImage} /></AvatarContainer>
                             <PostCreationContainer>
                                 <h1>What are you going to share today?</h1>
-                                <form>
-                                    <input required placeholder="http:// ..." />
-                                    <input placeholder="Awesome article about #javascript" />
-                                    <button>Publish</button>
+                                <form onSubmit={handleSubmit}>
+                                    <input
+                                        required type="url"
+                                        placeholder="http:// ..."
+                                        name="url" 
+                                        value={post.url || ""}
+                                        onChange={handleChange}
+                                    />
+                                    <input
+                                        type="description"
+                                        placeholder="Awesome article about #javascript"
+                                        name="description" 
+                                        value={post.description || ""}
+                                        onChange={handleChange}
+                                    />
+                                    <button
+                                        type="submit"
+                                        disabled={isButtonDisabled}
+                                    >Publish
+                                    </button>
                                 </form>
                             </PostCreationContainer>
                         </PublishContainer>
