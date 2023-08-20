@@ -1,13 +1,24 @@
 import { useEffect } from "react";
 import Post from "../components/Post";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import apiHashtag from "../services/apiHashtag";
 import TrendingHashtag from "../components/TrendingHashtag";
+import { UserContext } from "../contexts/userContext";
+import perfilImage from "../assets/default-avatar.jpg";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function HomePage(props) {
     const { trendingHashtags, setTrendingHashtags, setPosts } = props;
+    const { user } = useContext(UserContext)
+    const navigate = useNavigate()
+    const [post, setPost] = useState({})
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false)
 
     useEffect(() => {
+        if (!user) return navigate("/")
+
         apiHashtag.getTrendingHashtags()
             .then((res) => {
                 setTrendingHashtags(res.data);
@@ -17,6 +28,33 @@ export default function HomePage(props) {
             });
     }, []);
 
+    const handleChange = (event) => {
+        const name = event.target.name
+        const value = event.target.value
+        setPost(values => ({ ...values, [name]: value }))
+    }
+
+    const handleSubmit = async (event) => {
+        event.preventDefault()
+
+        setIsButtonDisabled(true)
+
+        try {
+            await publishPost()
+        } finally {
+            setIsButtonDisabled(false)
+        }
+    }
+
+    function publishPost() {
+        axios.post(`${process.env.REACT_APP_API_URL}/timeline`, { ...post, userId: user.userId })
+            .then(res => {
+                navigate("/timeline")
+            })
+            .catch(err => alert("There was an error when publishing your link!"))
+    }
+
+
     return (
         <PageContainer>
 
@@ -24,7 +62,34 @@ export default function HomePage(props) {
                 <TimelineTitle>timeline</TimelineTitle>
                 <ContentContainer>
                     <TimelineContainer>
-                        <Post 
+                        <PublishContainer>
+                            <AvatarContainer><img src={perfilImage} /></AvatarContainer>
+                            <PostCreationContainer>
+                                <h1>What are you going to share today?</h1>
+                                <form onSubmit={handleSubmit}>
+                                    <input
+                                        required type="url"
+                                        placeholder="http:// ..."
+                                        name="url" 
+                                        value={post.url || ""}
+                                        onChange={handleChange}
+                                    />
+                                    <input
+                                        type="description"
+                                        placeholder="Awesome article about #javascript"
+                                        name="description" 
+                                        value={post.description || ""}
+                                        onChange={handleChange}
+                                    />
+                                    <button
+                                        type="submit"
+                                        disabled={isButtonDisabled}
+                                    >Publish
+                                    </button>
+                                </form>
+                            </PostCreationContainer>
+                        </PublishContainer>
+                      <Post 
                         postOwner={"Juvenal Juvêncio"} 
                         postUrl={"www.google.com"} 
                         postDescription={"Olha que Url Legal!!!!"} 
@@ -140,3 +205,81 @@ const TimelineTitle = styled.div`
     font-weight: bold;
     color: #FFF;
 `;
+
+const PublishContainer = styled.div`
+  width: 31.822916666666668vw;
+  height: 23.22222222222222vh;
+  border-radius: 16px;
+  display: flex;
+  justify-content: space-around;
+  background: #ffffff;
+`
+
+const AvatarContainer = styled.div`
+  height:  23.22222222222222vh;
+  width: 3.0729166666666665vw; 
+  
+  img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-top: 12px;
+    margin-left: 8px;
+  }
+`
+
+const PostCreationContainer = styled.div`
+  margin-right: 10px;
+  width: 26.145833333333332vw;
+  height: 23.22222222222222vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+  h1 {
+    font-family: Lato;
+    font-size: 20px;
+    font-weight: 300;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #707070;
+    margin-top: 10px;
+  }
+
+  input {
+    width: 26.145833333333332vw;
+    height: 7.333333333333333vh;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    border: none;
+    background: #efefef;
+    font-family: Lato;
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #949494;
+  }
+
+  input:first-child {
+    height: 3.3333333333333335vh;
+  }
+
+  button {
+    width: 112px;
+    height: 31px;
+    border-radius: 5px;
+    border: none;
+    background: #1877F2;
+    font-family: Lato;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 17px;
+    letter-spacing: 0em;
+    text-align: center;
+    color: #FFFFFF;
+    float: right;
+  }
+`
