@@ -42,12 +42,16 @@ export default function HomePage(props) {
             await publishPost()
         } finally {
             setIsButtonDisabled(false)
+            setPost({})
         }
     }
 
     function publishPost() {
-        axios.post(`${process.env.REACT_APP_API_URL}/timeline`, { ...post, userId: user.userId })
+        const config = { headers: { Authorization: `Bearer ${user.token}` } }
+
+        axios.post(`${process.env.REACT_APP_API_URL}/timeline`, { ...post, userId: user.userId }, config)
             .then(res => {
+                console.log("Ok!")
                 navigate("/timeline")
             })
             .catch(err => alert("There was an error when publishing your link!"))
