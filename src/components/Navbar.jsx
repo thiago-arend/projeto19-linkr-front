@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { LogoutContainer, LogoutOption, NavbarContainer, NavbarTitle, UserPhotoContainer } from "../style/NavbarStyle";
-import perfilImage from "../assets/profile-image.jpeg"
+import defaultAvatar from "../assets/default-avatar.jpg";
 import { useContext, useState, useRef, useEffect } from "react";
 import apiAuth from "../services/apiAuth";
 import { UserContext } from "../contexts/userContext";
@@ -76,7 +76,7 @@ export default function Navbar() {
             <NavbarTitle>linkr</NavbarTitle>
             <LogoutContainer ref={ref}>
                 <ion-icon onClick={handleClick} name={showLogoff ? "chevron-up-outline" : "chevron-down-outline"}></ion-icon>
-                <UserPhotoContainer onClick={handleClick} src={userImage} />
+                <UserPhotoContainer onClick={handleClick} src={userImage ? userImage : defaultAvatar} />
                 <LogoutOption onClick={logOff} showLogoff={showLogoff}>Logout</LogoutOption>
             </LogoutContainer>
         </NavbarContainer>
