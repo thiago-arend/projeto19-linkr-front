@@ -14,9 +14,9 @@ export default function SearchBar() {
     const handleInputChange = event => {
         const newValue = event.target.value;
         setValue(newValue);
-
+        
         if (newValue.trim() === '') {
-            setUsers([]);  
+            setUsers([]);
         } else {
             searchUsers(newValue);
         }
@@ -24,12 +24,12 @@ export default function SearchBar() {
 
     function searchUsers(query) {
         axios.post(`${process.env.REACT_APP_API_URL}/search-users`, { str: query })
-            .then(response => {
-                setUsers(response.data);
-            })
-            .catch(error => {
-                console.error("Error searching users:", error);
-            });
+        .then(response => {
+            setUsers(response.data);
+        })
+        .catch(error => {
+            console.error("Error searching users:", error);
+        });
     }
 
     return (
@@ -40,15 +40,13 @@ export default function SearchBar() {
                 debounceTimeout={300}
                 onChange={handleInputChange}
             />
-            {users.length > 0 && (
-                <UserListContainer>
-                    {users.map((user, index) => (
-                        <div key={index}>{user.username}</div>
-                    ))}
-                </UserListContainer>
-            )}
+            <UserListContainer isVisible={users.length > 0}>
+                {users.map((user, index) => (
+                    <div key={index}>{user.username}</div>
+                ))}
+            </UserListContainer>
         </SearchBarContainer>
-    )
+    );
 }
 
 const SearchBarContainer = styled.div`
@@ -70,7 +68,7 @@ const SearchBarContainer = styled.div`
 `
 
 const UserListContainer = styled.div`
-  width: 29.322916666666668vw;
+  width: 28.5vw;
   background: #E7E7E7;
   font-family: Lato;
   font-size: 19px;
@@ -81,8 +79,9 @@ const UserListContainer = styled.div`
   color: #515151;
   position: absolute;
   top: 100%;
+  left: 0;
   border: 1px solid #ccc;
   padding: 10px;
   z-index: 1;
-  display: none;
+  visibility: ${props => (props.isVisible ? 'visible' : 'hidden')};
 `
