@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { LogoutContainer, LogoutOption, NavbarContainer, NavbarTitle, UserPhotoContainer } from "../style/NavbarStyle";
-import perfilImage from "../assets/profile-image.jpeg"
+import defaultAvatar from "../assets/default-avatar.jpg";
 import { useContext, useState, useRef, useEffect } from "react";
 import apiAuth from "../services/apiAuth";
 import { UserContext } from "../contexts/userContext";
@@ -10,7 +10,20 @@ export default function Navbar() {
     const [showLogoff, setShowLogoff] = useState(false);
     const { setUser, user } = useContext(UserContext);
     const location = useLocation().pathname;
-    console.log(perfilImage);
+    const [userImage, setUserImage] = useState(undefined);
+
+    useEffect(() => {
+        if (!user) return;
+
+        apiAuth.getUser(user.token)
+            .then((res) => {
+                setUserImage(res.data.photoUrl);
+            })
+            .catch((err) => {
+                console.log(err.response.data);
+            });
+
+    }, []);
 
     const useOutsideClick = (callback) => {
         const ref = useRef();
@@ -57,14 +70,14 @@ export default function Navbar() {
     }
 
     return (
-        ((location !== "/") && 
-        (location !== "/signup")) &&
+        ((location !== "/") &&
+            (location !== "/signup")) &&
         <NavbarContainer>
             <NavbarTitle>linkr</NavbarTitle>
             <LogoutContainer ref={ref}>
                 <ion-icon onClick={handleClick} name={showLogoff ? "chevron-up-outline" : "chevron-down-outline"}></ion-icon>
-                <UserPhotoContainer onClick={handleClick} src={user ? btoa(user.photoUrl) : perfilImage} />
-                <LogoutOption  onClick={logOff} showLogoff={showLogoff}>Logout</LogoutOption>
+                <UserPhotoContainer onClick={handleClick} src={userImage ? userImage : defaultAvatar} />
+                <LogoutOption onClick={logOff} showLogoff={showLogoff}>Logout</LogoutOption>
             </LogoutContainer>
         </NavbarContainer>
     )
