@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { DebounceInput } from 'react-debounce-input'
 import axios from 'axios'
 import { styled } from 'styled-components'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function SearchBar() {
     const [value, setValue] = useState('')
@@ -16,7 +16,7 @@ export default function SearchBar() {
     const handleInputChange = event => {
         const newValue = event.target.value;
         setValue(newValue);
-        
+
         if (newValue.trim() === '') {
             setUsers([]);
         } else {
@@ -26,12 +26,12 @@ export default function SearchBar() {
 
     function searchUsers(query) {
         axios.post(`${process.env.REACT_APP_API_URL}/search-users`, { str: query })
-        .then(response => {
-            setUsers(response.data);
-        })
-        .catch(error => {
-            console.error("Error searching users:", error);
-        });
+            .then(response => {
+                setUsers(response.data);
+            })
+            .catch(error => {
+                console.error("Error searching users:", error);
+            });
     }
 
     return (
@@ -44,7 +44,9 @@ export default function SearchBar() {
             />
             <UserListContainer isVisible={users.length > 0}>
                 {users.map((user, index) => (
-                    <div key={index}><img src={user.photoUrl} /> {user.username}</div>
+                    <Link key={index} to={`/user/${user.id}`}>
+                        <div><img src={user.photoUrl} /> {user.username}</div>
+                    </Link>
                 ))}
             </UserListContainer>
         </SearchBarContainer>
