@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { DebounceInput } from 'react-debounce-input'
 import axios from 'axios'
 import { styled } from 'styled-components'
+import { useNavigate } from 'react-router-dom'
 
 export default function SearchBar() {
     const [value, setValue] = useState('')
     const [users, setUsers] = useState([])
+    const navigate = useNavigate()
 
     useEffect(() => {
         console.log(users);
@@ -42,7 +44,7 @@ export default function SearchBar() {
             />
             <UserListContainer isVisible={users.length > 0}>
                 {users.map((user, index) => (
-                    <div key={index}>{user.username}</div>
+                    <div key={index}><img src={user.photoUrl} /> {user.username}</div>
                 ))}
             </UserListContainer>
         </SearchBarContainer>
@@ -84,4 +86,10 @@ const UserListContainer = styled.div`
   padding: 10px;
   z-index: 1;
   visibility: ${props => (props.isVisible ? 'visible' : 'hidden')};
+
+  img {
+    width: 39px;
+    height: 39px;
+    border-radius: 304px;
+  }
 `
