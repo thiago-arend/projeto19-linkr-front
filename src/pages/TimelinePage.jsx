@@ -3,7 +3,7 @@ import styled from "styled-components";
 import apiHashtag from "../services/apiHashtag";
 import TrendingHashtag from "../components/TrendingHashtag";
 import { UserContext } from "../contexts/userContext";
-import perfilImage from "../assets/profile-image.jpeg";
+import perfilImage from "../assets/default-avatar.jpg";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
