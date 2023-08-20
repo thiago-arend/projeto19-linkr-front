@@ -4,6 +4,7 @@ import apiHashtag from "../services/apiHashtag";
 import { useLocation } from "react-router-dom";
 import TrendingHashtag from "../components/TrendingHashtag";
 import Navbar from "../components/Navbar";
+import Post from "../components/Post";
 
 export default function HashtagPage(props) {
     const { trendingHashtags, setTrendingHashtags, posts, setPosts } = props;
@@ -36,7 +37,9 @@ export default function HashtagPage(props) {
                 <SuperContent>
                     <HashtagTitle># {hashtag}</HashtagTitle>
                     <ContentContainer>
-                        <TimelineContainer></TimelineContainer>
+                        <TimelineContainer>
+                            {posts.map(p => <Post post={p} hashtags={["Agro", "Comida"]} />)}
+                        </TimelineContainer>
                         <TrendingContainer>
                             <TrendingHeader>
                                 <h1>trending</h1>
@@ -124,9 +127,7 @@ const SuperContent = styled.div`
 `;
 
 const TimelineContainer = styled.div`
-    background-color: red;
     width: 611px;
-    height: 600px;
 `;
 
 const ContentContainer = styled.div`

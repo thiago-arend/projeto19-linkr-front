@@ -115,12 +115,21 @@ export default function HomePage(props) {
                                 </PostCreationContainer>
                             </PublishContainer>
                             <PostsContainer>
-                                <Post
-                                    postOwner={"Juvenal Juvêncio"}
-                                    postUrl={"www.google.com"}
-                                    postDescription={"Olha que Url Legal!!!!"}
-                                    numberOfLikes={13}
-                                    likedByViewer={false} />
+                                <Post hashtags={['agro', 'comida']} post={
+                                      {
+                                        id: 4,
+                                        url: "http://gtrg.gt.gt",
+                                        description: "post qualquer",
+                                        username: "marina",
+                                        photoUrl: "http://grg.grg",
+                                        likeCount: "3",
+                                        whoLikedList: [
+                                          "thiago",
+                                          "marina",
+                                          "andre"
+                                        ]
+                                      }
+                                } />
                             </PostsContainer>
                         </TimelineContainer>
                         <TrendingContainer>
