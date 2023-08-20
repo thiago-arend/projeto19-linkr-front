@@ -4,6 +4,7 @@ import defaultAvatar from "../assets/default-avatar.jpg";
 import { useContext, useState, useRef, useEffect } from "react";
 import apiAuth from "../services/apiAuth";
 import { UserContext } from "../contexts/userContext";
+import SearchBar from "./SearchBar";
 
 export default function Navbar() {
     const navigate = useNavigate();
@@ -62,6 +63,7 @@ export default function Navbar() {
     return (
         <NavbarContainer>
             <NavbarTitle>linkr</NavbarTitle>
+            <SearchBar></SearchBar>
             <LogoutContainer ref={ref}>
                 <ion-icon onClick={handleClick} name={showLogoff ? "chevron-up-outline" : "chevron-down-outline"}></ion-icon>
                 <UserPhotoContainer onClick={handleClick} src={userImage ? userImage : defaultAvatar} />
