@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage"; 
 import { createContext, useState } from "react";
@@ -16,7 +15,6 @@ export default function App() {
 
   return (
     <UserProvider>
-      {/*<PagesContainer>*/}
         <BrowserRouter>
           <Navbar />
           <Routes>
@@ -26,11 +24,7 @@ export default function App() {
             <Route path="/signup" element={<SignUpPage />} />
           </Routes>
         </BrowserRouter>
-      {/*</PagesContainer>*/}
     </UserProvider>
   );
 }
 
-const PagesContainer = styled.div`
-  background-color: red;
-`;
