@@ -33,16 +33,17 @@ export default function SignInPage() {
     }
   }
 
-  function signIn() {
-    axios.post(`${process.env.REACT_APP_API_URL}/`, login)
-      .then(res => {
-        setUser(res.data); // setUser({token, userId});
-        localStorage.removeItem("user");
-        localStorage.setItem("user", JSON.stringify(res.data));
-        navigate("/timeline")
-      })
-      .catch(err => alert("Incorrect e-mail or password!"))
-  }
+  async function signIn() {
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/`, login);
+      setUser(response.data);
+      localStorage.removeItem("user");
+      localStorage.setItem("user", JSON.stringify(response.data));
+      navigate("/timeline");
+    } catch (err) {
+      alert("Incorrect e-mail or password!");
+    }
+  }  
 
   return (
     <SingInContainer>

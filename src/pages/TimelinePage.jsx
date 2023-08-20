@@ -4,9 +4,11 @@ import styled from "styled-components";
 import apiHashtag from "../services/apiHashtag";
 import TrendingHashtag from "../components/TrendingHashtag";
 import { UserContext } from "../contexts/userContext";
-import perfilImage from "../assets/default-avatar.jpg";
+import defaultAvatar from "../assets/default-avatar.jpg";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import apiAuth from "../services/apiAuth";
+
 
 export default function HomePage(props) {
     const { trendingHashtags, setTrendingHashtags, setPosts } = props;
@@ -14,9 +16,18 @@ export default function HomePage(props) {
     const navigate = useNavigate()
     const [post, setPost] = useState({})
     const [isButtonDisabled, setIsButtonDisabled] = useState(false)
+    const [userImage, setUserImage] = useState(undefined);
 
     useEffect(() => {
         if (!user) return navigate("/")
+
+        apiAuth.getUser(user.token)
+            .then((res) => {
+                setUserImage(res.data.photoUrl);
+            })
+            .catch((err) => {
+                console.log(err.response.data);
+            });
 
         apiHashtag.getTrendingHashtags()
             .then((res) => {
@@ -34,29 +45,35 @@ export default function HomePage(props) {
     }
 
     const handleSubmit = async (event) => {
-        event.preventDefault()
-
-        setIsButtonDisabled(true)
-
+        event.preventDefault();
+      
+        setIsButtonDisabled(true);
+      
         try {
-            await publishPost()
+          await publishPost();
         } finally {
-            setIsButtonDisabled(false)
-            setPost({})
+          setIsButtonDisabled(false);
+          setPost({});
         }
-    }
-
-    function publishPost() {
-        const config = { headers: { Authorization: `Bearer ${user.token}` } }
-
-        axios.post(`${process.env.REACT_APP_API_URL}/timeline`, { ...post, userId: user.userId }, config)
-            .then(res => {
-                console.log("Ok!")
-                navigate("/timeline")
-            })
-            .catch(err => alert("There was an error when publishing your link!"))
-    }
-
+      };
+      
+      async function publishPost() {
+        try {
+          const config = { headers: { Authorization: `Bearer ${user.token}` } };
+      
+          const response = await axios.post(
+            `${process.env.REACT_APP_API_URL}/timeline`,
+            { ...post, userId: user.userId },
+            config
+          );
+      
+          console.log("Ok!");
+          navigate("/timeline");
+        } catch (err) {
+          alert("There was an error when publishing your link!");
+        }
+      }
+      
 
     return (
         <PageContainer>
@@ -66,7 +83,7 @@ export default function HomePage(props) {
                 <ContentContainer>
                     <TimelineContainer>
                         <PublishContainer>
-                            <AvatarContainer><img src={perfilImage} /></AvatarContainer>
+                            <AvatarContainer><img src={userImage ? userImage : defaultAvatar} /></AvatarContainer>
                             <PostCreationContainer>
                                 <h1>What are you going to share today?</h1>
                                 <form onSubmit={handleSubmit}>
@@ -76,6 +93,7 @@ export default function HomePage(props) {
                                         name="url" 
                                         value={post.url || ""}
                                         onChange={handleChange}
+                                        disabled={isButtonDisabled}
                                     />
                                     <input
                                         type="description"
@@ -83,11 +101,12 @@ export default function HomePage(props) {
                                         name="description" 
                                         value={post.description || ""}
                                         onChange={handleChange}
+                                        disabled={isButtonDisabled}
                                     />
                                     <button
                                         type="submit"
                                         disabled={isButtonDisabled}
-                                    >Publish
+                                    >{isButtonDisabled ? "Publishing..." : "Publish"}
                                     </button>
                                 </form>
                             </PostCreationContainer>
