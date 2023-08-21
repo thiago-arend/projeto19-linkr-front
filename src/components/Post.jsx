@@ -1,12 +1,19 @@
 import styled from "styled-components";
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import editIcon from "../assets/dashicons_edit.png";
+import trashCan from "../assets/trashcan.png";
+import axios from "axios";
+import { UserContext } from "../contexts/userContext";
 
 export default function Post(props) {
     const { description, id, likeCount, photoUrl, url, username, whoLikedList } = props.post;
     const { hashtags } = props;
     const [liked, setLiked] = useState(false);
     const [likesCount, setLikesCount] = useState(likeCount);
+    const [editMode, setEditMode] = useState(false);
+    const [editedDescription, setEditedDescription] = useState(description);
+    const { user } = useContext(UserContext)
 
     useEffect(() => {
         setLikesCount(likeCount);
@@ -29,8 +36,35 @@ export default function Post(props) {
             alert(`Curtido por ${whoLikedList[0]}, ${whoLikedList[1]} e outras ${whoLikedList.slice(2).length} pessoas`)
         else if (whoLikedList.length === 2)
             alert(`Curtido por ${whoLikedList[0]} e ${whoLikedList[1]}`);
-        else 
+        else
             alert(`Curtido por ${whoLikedList[0]}`);
+    }
+
+    function handleEditClick() {
+        setEditMode(true);
+    }
+
+    function handleSaveEdit() {
+        setEditedDescription(editedDescription);
+        setEditMode(false);
+
+        editPost()
+    }
+
+    function editPost() {
+        const config = { headers: { Authorization: `Bearer ${user.token}` } }
+
+        const updatedPostData = {
+            description: editedDescription,
+        }
+
+        axios.put(`${process.env.REACT_APP_API_URL}/post/${id}`, updatedPostData, config)
+            .then(response => {
+                console.log("Post updated successfully", response.data);
+            })
+            .catch(error => {
+                console.error("Error updating post", error);
+            })
     }
 
     return (
@@ -42,12 +76,20 @@ export default function Post(props) {
             </LeftSide>
             <RightSide>
                 <AuthorName>
-                    {username}
+                    {username} <img src={trashCan} /> <img src={editIcon} onClick={handleEditClick} />
                 </AuthorName>
-                <PostDescription>
-                    {description} {hashtags.map(h => <span>{`#${h} `}</span>)}
-                </PostDescription>
+                {editMode ? (
+                    <EditDescriptionInput
+                        value={editedDescription}
+                        onChange={(e) => setEditedDescription(e.target.value)}
+                    />
+                ) : (
+                    <PostDescription>
+                        {editedDescription} {hashtags.map(h => <span>{`#${h} `}</span>)}
+                    </PostDescription>
+                )}
                 <LinkPreview url={"https://www.google.com.br/"} width='100%' />
+                {editMode && <button onClick={handleSaveEdit}>Save</button>}
             </RightSide>
         </PostContainer>
     )
@@ -68,9 +110,22 @@ const PostContainer = styled.div`
 `;
 
 const AuthorName = styled.h1`
+    width: 100%;
     font-family: 'Lato', sans-serif;
     font-size: 19px;
     color: #FFF;
+
+    img {
+        width: 14px;
+        height: 14px;
+        float: right;
+        margin-left: 5px;
+    }
+
+    img:nth-child(2) {
+        width: 23px;
+        height: 23px;
+    }
 `;
 
 const PostDescription = styled.p`
@@ -133,4 +188,16 @@ const RightSide = styled.div`
         font-weight: 400;
         color: #FFFFFF;
     }
+`
+const EditDescriptionInput = styled.textarea`
+    font-family: 'Lato', sans-serif;
+    font-size: 17px;
+    color: #B7B7B7;
+    background-color: #171717;
+    border: none;
+    resize: none;
+    width: 90%;
+    padding: 8px;
+    border-radius: 5px;
+    background: white;
 `
