@@ -45,7 +45,6 @@ export default function Post(props) {
     }
 
     function handleSaveEdit() {
-        // Update the description with the edited content
         setEditedDescription(editedDescription);
         setEditMode(false);
 
@@ -56,18 +55,15 @@ export default function Post(props) {
         const config = { headers: { Authorization: `Bearer ${user.token}` } }
 
         const updatedPostData = {
-            description: editedDescription, // Use the edited description from state
-            // Add other properties if needed
+            description: editedDescription,
         }
 
         axios.put(`${process.env.REACT_APP_API_URL}/post/${id}`, updatedPostData, config)
             .then(response => {
                 console.log("Post updated successfully", response.data);
-                // You might want to update your component's state or trigger some UI change here
             })
             .catch(error => {
                 console.error("Error updating post", error);
-                // Handle errors or show an error message to the user
             })
     }
 
@@ -82,7 +78,6 @@ export default function Post(props) {
                 <AuthorName>
                     {username} <img src={trashCan} /> <img src={editIcon} onClick={handleEditClick} />
                 </AuthorName>
-                {/* Display the description or the input field based on editMode */}
                 {editMode ? (
                     <EditDescriptionInput
                         value={editedDescription}
@@ -94,7 +89,6 @@ export default function Post(props) {
                     </PostDescription>
                 )}
                 <LinkPreview url={"https://www.google.com.br/"} width='100%' />
-                {/* Display the save button if in edit mode */}
                 {editMode && <button onClick={handleSaveEdit}>Save</button>}
             </RightSide>
         </PostContainer>
