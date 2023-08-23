@@ -1,31 +1,25 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { DebounceInput } from 'react-debounce-input'
 import axios from 'axios'
 import { styled } from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
+import apiUser from '../services/apiUser'
+import { UserContext } from '../contexts/userContext'
 
 export default function SearchBar() {
     const [value, setValue] = useState('')
     const [users, setUsers] = useState([])
     const navigate = useNavigate()
-
-    useEffect(() => {
-        console.log(users);
-    }, [users]);
+    const { user } = useContext(UserContext);
 
     const handleInputChange = event => {
         const newValue = event.target.value;
         setValue(newValue);
-
-        if (newValue.trim() === '') {
-            setUsers([]);
-        } else {
-            searchUsers(newValue);
-        }
+        searchUsers(newValue);
     }
 
     function searchUsers(query) {
-        axios.post(`${process.env.REACT_APP_API_URL}/search-users`, { str: query })
+        apiUser.selectSearchResults(user.token, { str: query })
             .then(response => {
                 setUsers(response.data);
             })
@@ -94,4 +88,24 @@ const UserListContainer = styled.div`
     height: 39px;
     border-radius: 304px;
   }
+
+    a:link {
+      text-decoration: none;
+      color: black;
+    }
+
+    a:visited {
+        text-decoration: none;
+        color: black;
+    }
+
+    a:hover {
+        text-decoration: none;
+        color: black;
+    }
+
+    a:active {
+        text-decoration: none;
+        color: black;
+    }
 `
