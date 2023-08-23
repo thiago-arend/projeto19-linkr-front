@@ -7,17 +7,12 @@ import axios from "axios";
 import { UserContext } from "../contexts/userContext";
 
 export default function Post(props) {
-    const { description, id, likeCount, photoUrl, url, username, whoLikedList } = props.post;
-    const { hashtags } = props;
-    const [liked, setLiked] = useState(false);
-    const [likesCount, setLikesCount] = useState(likeCount);
+    const { hashtags, likedByViwer, photoUrl, numberOfLikes, postDescription, postId, postOwner, postUrl, whoLiked } = props.post;
+    const [liked, setLiked] = useState(likedByViwer);
+    const [likesCount, setLikesCount] = useState(Number(numberOfLikes));
     const [editMode, setEditMode] = useState(false);
-    const [editedDescription, setEditedDescription] = useState(description);
+    const [editedDescription, setEditedDescription] = useState(postDescription);
     const { user } = useContext(UserContext)
-
-    useEffect(() => {
-        setLikesCount(likeCount);
-    }, []);
 
     function handleLike() {
         if (!liked) {
@@ -30,14 +25,14 @@ export default function Post(props) {
     }
 
     function showWhoLiked() {
-        if (whoLikedList === null) return;
+        if (whoLiked === null) return;
 
-        if (whoLikedList.length > 2)
-            alert(`Curtido por ${whoLikedList[0]}, ${whoLikedList[1]} e outras ${whoLikedList.slice(2).length} pessoas`)
-        else if (whoLikedList.length === 2)
-            alert(`Curtido por ${whoLikedList[0]} e ${whoLikedList[1]}`);
+        if (whoLiked.length > 2)
+            alert(`Curtido por ${whoLiked[0]}, ${whoLiked[1]} e outras ${whoLiked.slice(2).length} pessoas`)
+        else if (whoLiked.length === 2)
+            alert(`Curtido por ${whoLiked[0]} e ${whoLiked[1]}`);
         else
-            alert(`Curtido por ${whoLikedList[0]}`);
+            alert(`Curtido por ${whoLiked[0]}`);
     }
 
     function handleEditClick() {
@@ -58,7 +53,7 @@ export default function Post(props) {
             description: editedDescription,
         }
 
-        axios.put(`${process.env.REACT_APP_API_URL}/post/${id}`, updatedPostData, config)
+        axios.put(`${process.env.REACT_APP_API_URL}/post/${postId}`, updatedPostData, config)
             .then(response => {
                 console.log("Post updated successfully", response.data);
             })
@@ -70,13 +65,13 @@ export default function Post(props) {
     return (
         <PostContainer>
             <LeftSide>
-                <img src={photoUrl} />
+                <img src={photoUrl && photoUrl} />
                 <ion-icon onClick={handleLike} liked={liked} name={liked ? "heart" : "heart-outline"}></ion-icon>
                 <span onClick={showWhoLiked}> {likesCount} likes </span>
             </LeftSide>
             <RightSide>
                 <AuthorName>
-                    {username} <img src={trashCan} /> <img src={editIcon} onClick={handleEditClick} />
+                    {postOwner} <img src={trashCan} /> <img src={editIcon} onClick={handleEditClick} />
                 </AuthorName>
                 {editMode ? (
                     <EditDescriptionInput
@@ -85,10 +80,10 @@ export default function Post(props) {
                     />
                 ) : (
                     <PostDescription>
-                        {editedDescription} {hashtags.map(h => <span>{`#${h} `}</span>)}
+                        {editedDescription} {hashtags && hashtags.map(h => <span>{`#${h} `}</span>)}<br />
+                        {postUrl}
                     </PostDescription>
                 )}
-                <LinkPreview url={"https://www.google.com.br/"} width='100%' />
                 {editMode && <button onClick={handleSaveEdit}>Save</button>}
             </RightSide>
         </PostContainer>

@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import apiAuth from "../services/apiAuth";
 import Navbar from "../components/Navbar";
+import apiPosts from "../services/apiPosts";
+import apiUser from "../services/apiUser";
 
 
 export default function HomePage(props) {
@@ -18,6 +20,8 @@ export default function HomePage(props) {
     const [post, setPost] = useState({})
     const [isButtonDisabled, setIsButtonDisabled] = useState(false)
     const [userImage, setUserImage] = useState(undefined);
+    const [timelinePosts, setTimelinePosts] = useState(undefined);
+    const [userHasFriends, setUserHasFriends] = useState(false);
 
     useEffect(() => {
         if (!user) return navigate("/")
@@ -37,6 +41,25 @@ export default function HomePage(props) {
             .catch((err) => {
                 console.log(err.response.data);
             });
+
+        apiPosts.getTimelinePosts(user.token)
+            .then((res) => {
+                console.log(res.data);
+                setTimelinePosts(res.data)
+            })
+            .catch((err) => {
+                console.log(err.response.data);
+            });
+
+        apiUser.verifyFriendsExistence(user.token)
+            .then((res) => {
+                console.log(res.data);
+                setUserHasFriends(res.data);
+            })
+            .catch((err) => {
+                console.log(err.response.data);
+            });
+
     }, []);
 
     const handleChange = (event) => {
@@ -115,21 +138,18 @@ export default function HomePage(props) {
                                 </PostCreationContainer>
                             </PublishContainer>
                             <PostsContainer>
-                                <Post hashtags={['agro', 'comida']} post={
-                                      {
-                                        id: 4,
-                                        url: "http://gtrg.gt.gt",
-                                        description: "post qualquer",
-                                        username: "marina",
-                                        photoUrl: "http://grg.grg",
-                                        likeCount: "3",
-                                        whoLikedList: [
-                                          "thiago",
-                                          "marina",
-                                          "andre"
-                                        ]
-                                      }
-                                } />
+                                {(userHasFriends === false)
+                                    ?
+                                    <Message>You don't follow anyone yet. Search for new friends!</Message>
+                                    :
+                                    (
+                                        (timelinePosts.length === 0)
+                                            ?
+                                            <Message>No posts found from your friends</Message>
+                                            :
+                                            timelinePosts.map(p => <Post post={p} />
+                                            )
+                                    )}
                             </PostsContainer>
                         </TimelineContainer>
                         <TrendingContainer>
@@ -188,6 +208,14 @@ const TrendingContent = styled.div`
         list-style-type: none;
     }
 `;
+
+const Message = styled.h1`
+    margin-left: 20px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 27px;
+    font-weight: bold;
+    color: #FFF;
+`
 
 const TrendingHeader = styled.div`
     position: absolute;
