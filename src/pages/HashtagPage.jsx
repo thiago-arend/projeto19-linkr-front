@@ -38,7 +38,7 @@ export default function HashtagPage(props) {
                     <HashtagTitle># {hashtag}</HashtagTitle>
                     <ContentContainer>
                         <TimelineContainer>
-                            {posts.map(p => <Post post={p} hashtags={["Agro", "Comida"]} />)}
+                            {posts && posts.map(p => <Post post={p} />)}
                         </TimelineContainer>
                         <TrendingContainer>
                             <TrendingHeader>
