@@ -44,10 +44,11 @@ export default function HomePage(props) {
         ///para pegar os posts dos usuários
         apiPost.getPost()
             .then((res) => {
-                setTimelinePost(res.data);
+                const response = res.data
+                setTimelinePost({...timelinePost, response});
             })
             .catch((err) => {
-                console.log(err.response.data);
+                console.log('ERROR GETPOST:',err.response.data);
             });
     }, []);
 
@@ -97,7 +98,6 @@ export default function HomePage(props) {
     }    
 
 
-    console.log(timelinePost)
 
 
     return (
