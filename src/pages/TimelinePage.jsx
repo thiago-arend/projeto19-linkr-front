@@ -42,8 +42,9 @@ export default function HomePage(props) {
 
 
         ///para pegar os posts dos usuários
-        apiPost.getPost()
+        apiPost.getPost(user.token)
             .then((res) => {
+                /*console.log(res.data)*/
                 const response = res.data
                 setTimelinePost({...timelinePost, response});
             })
