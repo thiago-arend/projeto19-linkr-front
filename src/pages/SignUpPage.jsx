@@ -10,25 +10,21 @@ export default function SignUpPage() {
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
-    const [name, setname] = useState("");
+    const [username, setusername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [photoURL, setPhotoURL] = useState("");
+    const [photoUrl, setPhotoURL] = useState("");
     const [buttonStatus, setbuttonStatus] = useState(initialButtonStatus)
 
     const handleSignUp = async () => {
 
         setbuttonStatus(1)
 
-        const data = {
-            email: email,
-            username: name,
-            password: password,
-            confirmPassword: confirmPassword,
-            photoUrl: photoURL,
-        }
+        const data = {email, username, password, confirmPassword, photoUrl}
 
-        if (!email || !name || !password || !confirmPassword) {
+        console.log(data)
+
+        if (!email || !username || !password || !confirmPassword) {
             alert('Please fill in all fields.');
             setbuttonStatus(0)
         } else {
@@ -39,9 +35,9 @@ export default function SignUpPage() {
                 setbuttonStatus(0)
                 navigate('/');
             } catch (error) {
-                alert(`Error: ${error.message}`);
+                alert(`Error: ${error.response.data}`);
                 setbuttonStatus(0)
-                console.error(error.message);
+                console.error(error);
             }
         }
 
@@ -61,10 +57,10 @@ export default function SignUpPage() {
             <SignUpDiv>
                 <SignUpForm>
                     <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                    <Input type="text" placeholder="Username" value={name} onChange={(e) => setname(e.target.value)} />
+                    <Input type="text" placeholder="Username" value={username} onChange={(e) => setusername(e.target.value)} />
                     <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     <Input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-                    <Input type="text" placeholder="Photo URL" value={photoURL} onChange={(e) => setPhotoURL(e.target.value)} />
+                    <Input type="text" placeholder="Photo URL" value={photoUrl} onChange={(e) => setPhotoURL(e.target.value)} />
                     <SignUpButton buttonstatus={buttonStatus} onClick={handleSignUp}>Sign Up</SignUpButton>
                     <p> <Link to="/">Switch back to login</Link></p>
                 </SignUpForm>

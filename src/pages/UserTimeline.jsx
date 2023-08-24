@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import apiAuth from "../services/apiAuth";
 import Navbar from "../components/Navbar";
-import apiPost from "../services/apiPost";
+import apiUserTimeline from "../services/apiUserTimeline";
 
 
 export default function HomePage(props) {
@@ -19,8 +19,19 @@ export default function HomePage(props) {
     const [post, setPost] = useState({})
     const [isButtonDisabled, setIsButtonDisabled] = useState(false)
     const [userImage, setUserImage] = useState(undefined);
-    const [timelinePost, setTimelinePost] = useState({})
+    const [userData, setUserData] = useState({})
 
+
+    // {
+    //     "userId": 3,
+    //     "postId": 7,
+    //     "postUrl": "https://efeitojoule.com/2009/04/fisica-espelhos-optica-espelhos-fisica/%22, 
+    //     "postDescription": "Olhem que legal",
+    //     "numberOfLikes": 1,
+    //     "likedByViewer": false
+    //     },
+
+    
     useEffect(() => {
         if (!user) return navigate("/")
 
@@ -40,11 +51,9 @@ export default function HomePage(props) {
                 console.log(err.response.data);
             });
 
-
-        ///para pegar os posts dos usuários
-        apiPost.getPost()
+            apiUserTimeline.getUserTimeline()
             .then((res) => {
-                setTimelinePost(res.data);
+                setUserData(res.data);
             })
             .catch((err) => {
                 console.log(err.response.data);
@@ -74,18 +83,9 @@ export default function HomePage(props) {
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
-
-
-            ///dados para serem enviados para a rota de post na timeline
-            const postData = {
-                userId: user.userId,
-                description: post.description,
-                url: post.url
-            }
-
             const response = await axios.post(
                 `${process.env.REACT_APP_API_URL}/timeline`,
-                postData,
+                { ...post, userId: user.userId },
                 config
             );
 
@@ -94,10 +94,7 @@ export default function HomePage(props) {
         } catch (err) {
             alert("There was an error when publishing your link!");
         }
-    }    
-
-
-    console.log(timelinePost)
+    }
 
 
     return (
@@ -133,7 +130,6 @@ export default function HomePage(props) {
                                         <button
                                             type="submit"
                                             disabled={isButtonDisabled}
-                                            onSubmit={publishPost}
                                         >{isButtonDisabled ? "Publishing..." : "Publish"}
                                         </button>
                                     </form>
@@ -141,7 +137,7 @@ export default function HomePage(props) {
                             </PublishContainer>
                             <PostsContainer>
                                 <Post hashtags={['agro', 'comida']} post={
-                                    {
+                                      {
                                         id: 4,
                                         url: "http://gtrg.gt.gt",
                                         description: "post qualquer",
@@ -149,11 +145,11 @@ export default function HomePage(props) {
                                         photoUrl: "http://grg.grg",
                                         likeCount: "3",
                                         whoLikedList: [
-                                            "thiago",
-                                            "marina",
-                                            "andre"
+                                          "thiago",
+                                          "marina",
+                                          "andre"
                                         ]
-                                    }
+                                      }
                                 } />
                             </PostsContainer>
                         </TimelineContainer>
