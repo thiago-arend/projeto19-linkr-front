@@ -39,7 +39,10 @@ export default function SearchBar() {
             <UserListContainer isVisible={users.length > 0}>
                 {users.map((user, index) => (
                     <Link key={index} to={`/user/${user.id}`}>
-                        <div><img src={user.photoUrl} /> {user.username}</div>
+                        <UserItem isFollowed={user.isFollowed}>
+                            <img src={user.photoUrl} /> {user.username} 
+                                <span>{user.isFollowed && <span>&#8226; {'following'}</span>}</span>
+                        </UserItem>
                     </Link>
                 ))}
             </UserListContainer>
@@ -62,25 +65,44 @@ const SearchBarContainer = styled.div`
         letter-spacing: 0em;
         text-align: left;
         color: #C6C6C6;
+
+        &::placeholder {
+            padding-left: 15px;
+        }
     }
 `
 
+const UserItem = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #515151;
+    height: 50px;
+    width: ${props => (props.isFollowed ? '80%' : '60%')};
+
+    span {
+        color: #C5C5C5;
+    }
+`;
+
 const UserListContainer = styled.div`
-  width: 28.5vw;
+  width: calc(100% - 22px);
   background: #E7E7E7;
   font-family: Lato;
   font-size: 19px;
   font-weight: 400;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
   line-height: 23px;
   letter-spacing: 0em;
   text-align: left;
   color: #515151;
   position: absolute;
-  top: 100%;
+  top: calc(100% - 5px);
   left: 0;
   border: 1px solid #ccc;
   padding: 10px;
-  z-index: 1;
+  z-index: -1;
   visibility: ${props => (props.isVisible ? 'visible' : 'hidden')};
 
   img {
