@@ -11,6 +11,7 @@ import apiAuth from "../services/apiAuth";
 import Navbar from "../components/Navbar";
 import apiPosts from "../services/apiPosts";
 import apiUser from "../services/apiUser";
+import FollowButton from "../components/FollowButton";
 
 
 export default function HomePage(props) {
@@ -138,6 +139,7 @@ export default function HomePage(props) {
                                 </PostCreationContainer>
                             </PublishContainer>
                             <PostsContainer>
+                                <FollowButton />
                                 {(userHasFriends === false)
                                     ?
                                     <Message>You don't follow anyone yet. Search for new friends!</Message>

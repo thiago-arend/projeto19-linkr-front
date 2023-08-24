@@ -9,14 +9,32 @@ function verifyFriendsExistence(token) {
     return promise;
 }
 
-function selectSearchResults(token, str) {
+function verifyFollowingUser(token, id) {
     const auth = {
         headers: { Authorization: `Bearer ${token}` }
     };
 
-    const promise = axios.post(`${process.env.REACT_APP_API_URL}/search-users`, str, auth);
+    const promise = axios.post(`${process.env.REACT_APP_API_URL}/user/is-following/${id}`, {}, auth);
     return promise;
 }
 
-const apiUser = { verifyFriendsExistence, selectSearchResults };
+function followUser(token, id) {
+    const auth = {
+        headers: { Authorization: `Bearer ${token}` }
+    };
+
+    const promise = axios.post(`${process.env.REACT_APP_API_URL}/user/${id}/follow`, {}, auth);
+    return promise;
+}
+
+function unfollowUser(token, id) {
+    const auth = {
+        headers: { Authorization: `Bearer ${token}` }
+    };
+
+    const promise = axios.post(`${process.env.REACT_APP_API_URL}/user/${id}/unfollow`, {}, auth);
+    return promise;
+}
+
+const apiUser = { verifyFriendsExistence, verifyFollowingUser, followUser, unfollowUser };
 export default apiUser;
