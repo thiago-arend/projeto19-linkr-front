@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { LinkPreview } from '@dhaiwat10/react-link-preview';
+import avatar from "../assets/default-avatar.jpg"
 import { useEffect, useState, useContext } from "react";
 import editIcon from "../assets/dashicons_edit.png";
 import trashCan from "../assets/trashcan.png";
@@ -8,13 +9,19 @@ import { UserContext } from "../contexts/userContext";
 import apiPosts from "../services/apiPosts";
 
 export default function Post(props) {
-    const { 
-        hashtags, likedByViwer, photoUrl, numberOfLikes, 
+    const {
+        hashtags, likedByViwer, photoUrl, numberOfLikes,
         postDescription, postId, postOwner, postUrl, whoLiked,
-        numberOfComments, numberOfReposts
+        numberOfComments, numberOfReposts, Comments
     } = props.post;
+    let [newComment, setNewComment] = useState("");
     const [liked, setLiked] = useState(likedByViwer);
     const [likesCount, setLikesCount] = useState(Number(numberOfLikes));
+    const [repostModal, setrepostModal] = useState(true);
+    const [repostsCount, setrepostsCount] = useState(Number(numberOfReposts));
+    const [CommentsCount, setCommentsCount] = useState(Number(numberOfComments));
+    const [commentSection, setcommentSection] = useState(false);
+    const [repostedByYou, setrepostedByYou] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [editedDescription, setEditedDescription] = useState(postDescription);
     const { user } = useContext(UserContext)
@@ -40,6 +47,49 @@ export default function Post(props) {
         }
 
         setLiked(!liked);
+    }
+
+    function openRepostModal() {
+        setrepostModal(!repostModal)
+    }
+    function openComments() {
+        setcommentSection(!commentSection)
+    }
+    function addComment(e) {
+        e.preventDefault();
+        apiPosts.addComment(user.token, postId, newComment)
+            .then((res) => {
+                setCommentsCount(CommentsCount + 1)
+            })
+            .catch((res) => {
+                console.log(res)
+            })
+        setNewComment('');
+    }
+    function addComment2() {
+        apiPosts.addComment(user.token, postId, newComment)
+            .then((res) => {
+                setCommentsCount(CommentsCount + 1)
+            })
+            .catch((res) => {
+                console.log(res)
+            })
+        setNewComment('');
+    }
+
+    function addRepost(postId) {
+        apiPosts.addRepost(user.token, postId)
+            .then((res) => {
+                setrepostsCount(repostsCount + 1)
+                setrepostedByYou(true)
+            })
+            .catch((res) => {
+                if (res.response.data == "This repost is alredy done!") {
+                    setrepostedByYou(true)
+                }
+                console.log(res)
+            })
+        setrepostModal(!repostModal)
     }
 
     function showWhoLiked() {
@@ -81,46 +131,91 @@ export default function Post(props) {
     }
 
     return (
-        <PostContainer>
-            <LeftSide>
-                <img src={photoUrl && photoUrl} />
-                <LeftSideIcons>
-                    <ion-icon onClick={handleLike} liked={liked} name={liked ? "heart" : "heart-outline"}></ion-icon>
-                    <span onClick={showWhoLiked}> {likesCount} likes </span>
-                </LeftSideIcons>
-                <LeftSideIcons>
-                    <ion-icon name="chatbubbles-outline"></ion-icon>
-                    <span onClick={showWhoLiked}> {numberOfComments} comments </span>
-                </LeftSideIcons>
-                <LeftSideIcons>
-                    <ion-icon name="git-compare-outline"></ion-icon>
-                    <span onClick={showWhoLiked}> {numberOfReposts} re-posts </span>
-                </LeftSideIcons>
-
-            </LeftSide>
-            <RightSide>
-                <AuthorName>
-                    {postOwner}
+        <>
+            <RepostModal escondido={repostModal} >
+                <div>
+                    <span>
+                        Do you want to re-post this link?
+                    </span>
                     <div>
-                        <img src={editIcon} onClick={handleEditClick} />
-                        <img src={trashCan} />
+                        <button onClick={() => openRepostModal()} > No, cancel </button>
+                        <button onClick={() => addRepost(postId)}> Yes, share! </button>
                     </div>
+                </div>
+            </RepostModal>
 
-                </AuthorName>
-                {editMode ? (
-                    <EditDescriptionInput
-                        value={editedDescription}
-                        onChange={(e) => setEditedDescription(e.target.value)}
-                    />
-                ) : (
-                    <PostDescription>
-                        {editedDescription} {hashtags && hashtags.map(h => <span>{`#${h} `}</span>)}<br />
-                        {postUrl}
-                    </PostDescription>
-                )}
-                {editMode && <button onClick={handleSaveEdit}>Save</button>}
-            </RightSide>
-        </PostContainer>
+            <PostContainer opencomments={commentSection}>
+                <RepostedByYou escondido={setrepostedByYou}>
+                    Re-posted by you
+                </RepostedByYou>
+                <LeftSide>
+                    <img src={photoUrl && photoUrl} />
+                    <LeftSideIcons>
+                        <ion-icon onClick={handleLike} liked={liked} name={liked ? "heart" : "heart-outline"}></ion-icon>
+                        <span onClick={showWhoLiked}> {likesCount} likes </span>
+                    </LeftSideIcons>
+                    <LeftSideIcons onClick={() => openComments()}>
+                        <ion-icon name="chatbubbles-outline"></ion-icon>
+                        <span> {CommentsCount} comments </span>
+                    </LeftSideIcons>
+                    <LeftSideIcons>
+                        <ion-icon onClick={() => openRepostModal()} name="git-compare-outline"></ion-icon>
+                        <span> {repostsCount} re-posts </span>
+                    </LeftSideIcons>
+                </LeftSide>
+                <RightSide>
+                    <AuthorName>
+                        {postOwner}
+                        <div>
+                            <img src={editIcon} onClick={handleEditClick} />
+                            <img src={trashCan} />
+                        </div>
+
+                    </AuthorName>
+                    {editMode ? (
+                        <EditDescriptionInput
+                            value={editedDescription}
+                            onChange={(e) => setEditedDescription(e.target.value)}
+                        />
+                    ) : (
+                        <PostDescription>
+                            {editedDescription} {hashtags && hashtags.map(h => <span>{`#${h} `}</span>)}<br />
+                            {postUrl}
+                        </PostDescription>
+                    )}
+                    {editMode && <button onClick={handleSaveEdit}>Save</button>}
+                </RightSide>
+                <CommentsContainer escondido={!commentSection}>
+                    {(Comments.length !== 0 && Comments[0].id !== null)
+                        ?
+                        Comments.map(comentario => {
+                            return (
+                                <div key={comentario.id}>
+                                    <img src={comentario.commentatorPfp} alt="" />
+                                    <div>
+                                        <h1> {comentario.commentatorName} </h1>
+                                        <h2> {comentario.commentary} </h2>
+                                    </div>
+
+                                </div>)
+                        })
+                        :
+                        <span> Nenhum comentário até agora </span>
+                    }
+                    <NewCommentContainer onSubmit={addComment}>
+                        <img src={avatar} alt="" />
+                        <input 
+                            type="text"
+                            placeholder="write a comment..."
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                        />
+                        <ion-icon onClick={() => addComment2()} name="paper-plane-outline"></ion-icon>
+                    </NewCommentContainer>
+                </CommentsContainer>
+                
+            </PostContainer>
+        </>
     )
 
 }
@@ -132,10 +227,11 @@ const PostContainer = styled.div`
     border-radius: 10px;
     background-color: #171717;
     margin-bottom: 14px;
-    
+    position: relative;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+    margin-bottom: ${props => props.opencomments ? '200px' : '0px'};
 `;
 
 const AuthorName = styled.h1`
@@ -257,4 +353,165 @@ const EditDescriptionInput = styled.textarea`
     padding: 8px;
     border-radius: 5px;
     background: white;
+`
+const RepostModal = styled.div`
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 1000;
+
+    display: ${props => props.escondido ? 'none' : 'flex'};
+    width: 100vw;
+    height: 100vh;
+    background-color: white;
+    opacity: 90%;
+
+    div {
+        z-index: 1001;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        width: 596px;
+        height: 210px;
+        position: fixed;
+        top: calc(50% - 105px);
+        left: calc(50% - 298px);
+        border-radius: 20px;
+        background-color: #333333;
+
+        span {
+            font-family: Lato;
+            font-size: 29px;
+            font-weight: 700;
+            line-height: 35px;
+            letter-spacing: 0em;
+            text-align: center;
+            color: #FFFFFF;
+        }
+        div {
+            position: unset;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+            align-items: center;
+            button {
+                width: 134px;
+                height: 37px;
+                border-radius: 5px;
+            }
+        }
+    }
+`
+const RepostedByYou = styled.div`
+    z-index: -1;
+    background-color: #1E1E1E;
+    width: 100%;
+    height: 220px;
+    position: absolute;
+    top: -25px;
+    left: 0px;
+    padding-top: 5px;
+    border-radius: 16px;
+    text-align: center;
+    display: ${props => props.escondido ? 'none' : 'flex'};
+`
+
+const CommentsContainer = styled.div`
+    padding-bottom: 80px;
+    position: relative;
+    box-sizing: border-box;
+    z-index: -1;
+    background-color: #1E1E1E;
+    width: 100%;
+    height: 220px;
+
+    overflow-y: scroll;
+
+
+    position: absolute;
+    top: 195px;
+    left: 0px;
+    padding-top: 5px;
+    border-radius: 16px;
+    text-align: center;
+    display: ${props => props.escondido ? 'none' : 'flex'};
+    flex-direction: column;
+    padding: 30px;
+    justify-content: flex-start;
+    align-items: space-evenly ;
+    span {
+        color: white;
+    }
+    div {
+        padding-bottom: 5px;
+        border-bottom: 1px solid #353535;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 20px;
+        img {
+            width: 39px;
+            height: 39px;
+            border-radius: 100%;
+        }
+        div {
+            padding: 7.5px;
+            border: unset;
+
+            display: flex;
+            flex-direction: column;
+            h1 {
+                font-family: Lato;
+                font-size: 14px;
+                font-weight: 700;
+                line-height: 17px;
+                letter-spacing: 0em;
+                text-align: left;
+                color: #f3f3f3;
+            }
+            h2 {
+                font-family: Lato;
+                font-size: 14px;
+                font-weight: 400;
+                line-height: 17px;
+                letter-spacing: 0em;
+                text-align: left;
+                color: #ACACAC;
+            }
+        }
+    }
+`
+
+const NewCommentContainer = styled.form`
+    padding-top: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    width: 95%;
+    position: sticky;
+    left: 20px;
+    bottom: -40px;
+    gap: 20px;
+    img {
+            width: 39px;
+            height: 39px;
+            border-radius: 100%;
+        }
+    input {
+        width: 510px;
+        height: 39px;
+        border-radius: 8px;
+        background-color: #252525;
+    }
+    ion-icon {
+        font-size: 25px;
+        position: absolute;
+        bottom: 10px;
+        right: 25px;
+        color: white;
+        cursor: pointer;
+    }
 `
