@@ -11,8 +11,7 @@ function getPost(token) {
 }
 
 
-function getPostbyId(token) {
-    const { id } = req.params
+function getPostbyId(token, id) {
 
     const auth = {
         headers: { Authorization: `Bearer ${token}` }

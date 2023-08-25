@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar";
 import UserProvider from "./contexts/userContext";
 import TimelinePage from "./pages/TimelinePage";
 import HashtagPage from "./pages/HashtagPage";
+import UserTimeline from "./pages/UserTimeline"/
 
 export const UserContext = createContext();
 
@@ -19,6 +20,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<SignInPage />} />
             <Route path="/timeline" element={<TimelinePage setPosts={setPosts} trendingHashtags={trendingHashtags} setTrendingHashtags={setTrendingHashtags}/>} />
+            <Route path="/posts/user/:id" element={<UserTimeline setPosts={setPosts} trendingHashtags={trendingHashtags} setTrendingHashtags={setTrendingHashtags}/>} />
             <Route path="/hashtag/:hashtag" element={<HashtagPage posts={posts} setPosts={setPosts} trendingHashtags={trendingHashtags} setTrendingHashtags={setTrendingHashtags}/>} />
             <Route path="/signup" element={<SignUpPage />} />
           </Routes>

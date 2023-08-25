@@ -10,16 +10,53 @@ import axios from "axios";
 import apiAuth from "../services/apiAuth";
 import Navbar from "../components/Navbar";
 import apiPost from "../services/apiPost";
+import useInterval from "use-interval";
+
+
 
 
 export default function HomePage(props) {
     const { trendingHashtags, setTrendingHashtags, setPosts } = props;
-    const { user } = useContext(UserContext)
-    const navigate = useNavigate()
-    const [post, setPost] = useState({})
-    const [isButtonDisabled, setIsButtonDisabled] = useState(false)
-    const [userImage, setUserImage] = useState(undefined);
-    const [timelinePost, setTimelinePost] = useState([])
+    const { user } = useContext(UserContext);
+    const navigate = useNavigate();
+    const [timelinePost, setTimelinePost] = useState([]);
+    const { id } = useParams();
+
+    // Estados para controle dos novos posts
+    const [newPostsAvailable, setNewPostsAvailable] = useState(false);
+    const [newPosts, setNewPosts] = useState([]);
+
+    // Função para verificar novos posts
+    const checkNewPosts = async () => {
+        try {
+            const response = await apiPost.getPostbyId(user.token, id);
+            const fetchedPosts = response.data;
+
+            if (fetchedPosts.length > timelinePost.length) {
+                const newPosts = fetchedPosts.filter(
+                    (fetchedPost) =>
+                        !timelinePost.find((existingPost) => existingPost.id === fetchedPost.id)
+                );
+
+                if (newPosts.length > 0) {
+                    setNewPosts(newPosts);
+                    setNewPostsAvailable(true);
+                }
+            }
+        } catch (err) {
+            console.log("Error checking new posts:", err);
+        }
+    };
+
+    // Atualiza a verificação de novos posts a cada 15 segundos
+    useInterval(checkNewPosts, 15000);
+
+    // Função para lidar com a exibição dos novos posts
+    const handleShowNewPosts = () => {
+        setTimelinePost((prevPosts) => [...newPosts, ...prevPosts]);
+        setNewPosts([]);
+        setNewPostsAvailable(false);
+    };
 
     useEffect(() => {
         if (!user) return navigate("/")
@@ -42,16 +79,16 @@ export default function HomePage(props) {
 
 
         ///para pegar os posts dos usuários
-        apiPost.getPostbyId(user.token)
+        apiPost.getPostbyId(user.token, id)
             .then((res) => {
-                const response = res.data
+                const response = res.data;
                 setTimelinePost(response);
-                console.log('response: ', response)
+                console.log('response: ', response);
             })
             .catch((err) => {
                 console.log('ERROR GETPOST:', err.response.data);
             });
-    }, []);
+    }, [user, navigate, id]);
 
     const handleChange = (event) => {
         const name = event.target.name
@@ -110,36 +147,6 @@ export default function HomePage(props) {
                     <TimelineTitle><AvatarContainer><img src={post.postUrl ? post.postUrl : defaultAvatar} /></AvatarContainer> {post.postOwner}</TimelineTitle>
                     <ContentContainer>
                         <TimelineContainer>
-                            {/* <PublishContainer>
-                                <AvatarContainer><img src={userImage ? userImage : defaultAvatar} /></AvatarContainer>
-                                <PostCreationContainer>
-                                    <h1>What are you going to share today?</h1>
-                                    <form onSubmit={handleSubmit}>
-                                        <input
-                                            required type="url"
-                                            placeholder="http:// ..."
-                                            name="url"
-                                            value={post.url || ""}
-                                            onChange={handleChange}
-                                            disabled={isButtonDisabled}
-                                        />
-                                        <input
-                                            type="description"
-                                            placeholder="Awesome article about #javascript"
-                                            name="description"
-                                            value={post.description || ""}
-                                            onChange={handleChange}
-                                            disabled={isButtonDisabled}
-                                        />
-                                        <button
-                                            type="submit"
-                                            disabled={isButtonDisabled}
-                                            onSubmit={publishPost}
-                                        >{isButtonDisabled ? "Publishing..." : "Publish"}
-                                        </button>
-                                    </form>
-                                </PostCreationContainer>
-                            </PublishContainer> */}
                             <PostsContainer>
                                 {timelinePost.map((post) => (
                                     <Post
@@ -157,6 +164,11 @@ export default function HomePage(props) {
                                     />
                                 ))}
                             </PostsContainer>
+                            {newPostsAvailable && (
+                                <NewPostsButton onClick={handleShowNewPosts}>
+                                    Ver novos posts ({newPosts.length})
+                                </NewPostsButton>
+                            )}
                         </TimelineContainer>
                         <TrendingContainer>
                             <TrendingHeader>
@@ -351,3 +363,24 @@ const PostCreationContainer = styled.div`
     float: right;
   }
 `
+
+const NewPostsButton = styled.button`
+  width: 160px;
+  height: 40px;
+  border-radius: 8px;
+  border: none;
+  background-color: #1877f2;
+  color: #ffffff;
+  font-family: Lato;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 17px;
+  letter-spacing: 0em;
+  text-align: center;
+  cursor: pointer;
+  margin-top: 10px;
+
+  &:hover {
+    background-color: #1466c9;
+  }
+`;
