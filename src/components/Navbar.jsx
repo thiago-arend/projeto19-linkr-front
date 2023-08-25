@@ -66,8 +66,8 @@ export default function Navbar() {
             <SearchBar></SearchBar>
             <LogoutContainer ref={ref}>
                 <ion-icon onClick={handleClick} name={showLogoff ? "chevron-up-outline" : "chevron-down-outline"}></ion-icon>
-                <UserPhotoContainer onClick={handleClick} src={userImage ? userImage : defaultAvatar} />
-                <LogoutOption onClick={logOff} showLogoff={showLogoff}>Logout</LogoutOption>
+                <UserPhotoContainer data-test="avatar" onClick={handleClick} src={userImage ? userImage : defaultAvatar} />
+                <LogoutOption data-test="menu" showLogoff={showLogoff}> <p data-test="logout" onClick={logOff}> Logout</p> </LogoutOption>
             </LogoutContainer>
         </NavbarContainer>
     )

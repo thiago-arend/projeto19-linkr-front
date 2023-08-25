@@ -35,10 +35,10 @@ export default function HashtagPage(props) {
             <PageContainer>
 
                 <SuperContent>
-                    <HashtagTitle># {hashtag}</HashtagTitle>
+                    <HashtagTitle data-test="hashtag-title" ># {hashtag}</HashtagTitle>
                     <ContentContainer>
                         <TimelineContainer>
-                            {posts && posts.map(p => <Post post={p} />)}
+                            {posts && posts.map(p => <Post data-test="post" post={p} />)}
                         </TimelineContainer>
                         <TrendingContainer>
                             <TrendingHeader>
