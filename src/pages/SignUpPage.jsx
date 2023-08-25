@@ -12,7 +12,6 @@ export default function SignUpPage() {
     const [email, setEmail] = useState("");
     const [name, setname] = useState("");
     const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
     const [photoURL, setPhotoURL] = useState("");
     const [buttonStatus, setbuttonStatus] = useState(initialButtonStatus)
 
@@ -24,11 +23,10 @@ export default function SignUpPage() {
             email: email,
             username: name,
             password: password,
-            confirmPassword: confirmPassword,
-            photoUrl: photoURL,
+            photoUrl: photoURL
         }
 
-        if (!email || !name || !password || !confirmPassword) {
+        if (!email || !name || !password) {
             alert('Please fill in all fields.');
             setbuttonStatus(0)
         } else {
@@ -60,13 +58,35 @@ export default function SignUpPage() {
             </GrayBox>
             <SignUpDiv>
                 <SignUpForm>
-                    <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                    <Input type="text" placeholder="Username" value={name} onChange={(e) => setname(e.target.value)} />
-                    <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                    <Input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-                    <Input type="text" placeholder="Photo URL" value={photoURL} onChange={(e) => setPhotoURL(e.target.value)} />
-                    <SignUpButton buttonstatus={buttonStatus} onClick={handleSignUp}>Sign Up</SignUpButton>
-                    <p> <Link to="/">Switch back to login</Link></p>
+                    <Input data-test="email"
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)} />
+                    <Input
+                        data-test="username"
+                        type="text"
+                        placeholder="Username"
+                        value={name}
+                        onChange={(e) => setname(e.target.value)} />
+                    <Input
+                        data-test="password"
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)} />
+                    {/*<Input 
+                        type="password" 
+                        placeholder="Confirm Password" 
+                        value={confirmPassword} 
+                        onChange={(e) => setConfirmPassword(e.target.value)} />*/}
+                    <Input data-test="picture-url"
+                        type="text"
+                        placeholder="Photo URL"
+                        value={photoURL}
+                        onChange={(e) => setPhotoURL(e.target.value)} />
+                    <SignUpButton data-test="sign-up-btn" buttonstatus={buttonStatus} onClick={handleSignUp}>Sign Up</SignUpButton>
+                    <p> <Link data-test="login-link" to="/">Switch back to login</Link></p>
                 </SignUpForm>
             </SignUpDiv>
         </SingUpContainer>

@@ -144,15 +144,15 @@ export default function Post(props) {
                 </div>
             </RepostModal>
 
-            <PostContainer opencomments={commentSection}>
+            <PostContainer data-test="post" opencomments={commentSection}>
                 <RepostedByYou escondido={setrepostedByYou}>
                     Re-posted by you
                 </RepostedByYou>
                 <LeftSide>
                     <img src={photoUrl && photoUrl} />
                     <LeftSideIcons>
-                        <ion-icon onClick={handleLike} liked={liked} name={liked ? "heart" : "heart-outline"}></ion-icon>
-                        <span onClick={showWhoLiked}> {likesCount} likes </span>
+                        <ion-icon data-test="like-btn" onClick={handleLike} liked={liked} name={liked ? "heart" : "heart-outline"}></ion-icon>
+                        <span data-test="counter" onClick={showWhoLiked}> {likesCount} likes </span>
                     </LeftSideIcons>
                     <LeftSideIcons onClick={() => openComments()}>
                         <ion-icon name="chatbubbles-outline"></ion-icon>

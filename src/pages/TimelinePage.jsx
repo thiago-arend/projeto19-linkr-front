@@ -111,10 +111,10 @@ export default function TimelinePage(props) {
                         <TimelineContainer>
                             <PublishContainer>
                                 <AvatarContainer><img src={userImage ? userImage : defaultAvatar} /></AvatarContainer>
-                                <PostCreationContainer>
+                                <PostCreationContainer data-test="publish-box">
                                     <h1>What are you going to share today?</h1>
                                     <form onSubmit={handleSubmit}>
-                                        <input
+                                        <input data-test="link"
                                             required type="url"
                                             placeholder="http:// ..."
                                             name="url"
@@ -122,7 +122,7 @@ export default function TimelinePage(props) {
                                             onChange={handleChange}
                                             disabled={isButtonDisabled}
                                         />
-                                        <input
+                                        <input data-test="description"
                                             type="description"
                                             placeholder="Awesome article about #javascript"
                                             name="description"
@@ -130,7 +130,7 @@ export default function TimelinePage(props) {
                                             onChange={handleChange}
                                             disabled={isButtonDisabled}
                                         />
-                                        <button
+                                        <button data-test="publish-btn"
                                             type="submit"
                                             disabled={isButtonDisabled}
                                         >{isButtonDisabled ? "Publishing..." : "Publish"}
@@ -142,7 +142,7 @@ export default function TimelinePage(props) {
                                 <FollowButton />
                                 {(userHasFriends === false)
                                     ?
-                                    <Message>You don't follow anyone yet. Search for new friends!</Message>
+                                    <Message data-test="message">You don't follow anyone yet. Search for new friends!</Message>
                                     :
                                     (
                                         (timelinePosts.length === 0)
@@ -154,14 +154,14 @@ export default function TimelinePage(props) {
                                     )}
                             </PostsContainer>
                         </TimelineContainer>
-                        <TrendingContainer>
+                        <TrendingContainer data-test="trending">
                             <TrendingHeader>
                                 <h1>trending</h1>
                                 <div></div>
                             </TrendingHeader>
                             <TrendingContent>
                                 <ol>
-                                    {trendingHashtags && trendingHashtags.map(h => <TrendingHashtag
+                                    {trendingHashtags && trendingHashtags.map(h => <TrendingHashtag  data-test="hashtag"
                                         key={h.hashtag}
                                         hashtag={h}
                                         setPosts={setPosts} />)}
