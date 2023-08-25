@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { LinkPreview } from "@dhaiwat10/react-link-preview";
+import { LinkPreview } from '@dhaiwat10/react-link-preview';
 import { useEffect, useState, useContext } from "react";
 import editIcon from "../assets/dashicons_edit.png";
 import trashCan from "../assets/trashcan.png";
@@ -8,7 +8,11 @@ import { UserContext } from "../contexts/userContext";
 import apiPosts from "../services/apiPosts";
 
 export default function Post(props) {
-    const { hashtags, likedByViwer, photoUrl, numberOfLikes, postDescription, postId, postOwner, postUrl, whoLiked } = props.post;
+    const { 
+        hashtags, likedByViwer, photoUrl, numberOfLikes, 
+        postDescription, postId, postOwner, postUrl, whoLiked,
+        numberOfComments, numberOfReposts
+    } = props.post;
     const [liked, setLiked] = useState(likedByViwer);
     const [likesCount, setLikesCount] = useState(Number(numberOfLikes));
     const [editMode, setEditMode] = useState(false);
@@ -80,12 +84,28 @@ export default function Post(props) {
         <PostContainer>
             <LeftSide>
                 <img src={photoUrl && photoUrl} />
-                <ion-icon onClick={handleLike} liked={liked} name={liked ? "heart" : "heart-outline"}></ion-icon>
-                <span onClick={showWhoLiked}> {likesCount} likes </span>
+                <LeftSideIcons>
+                    <ion-icon onClick={handleLike} liked={liked} name={liked ? "heart" : "heart-outline"}></ion-icon>
+                    <span onClick={showWhoLiked}> {likesCount} likes </span>
+                </LeftSideIcons>
+                <LeftSideIcons>
+                    <ion-icon name="chatbubbles-outline"></ion-icon>
+                    <span onClick={showWhoLiked}> {numberOfComments} comments </span>
+                </LeftSideIcons>
+                <LeftSideIcons>
+                    <ion-icon name="git-compare-outline"></ion-icon>
+                    <span onClick={showWhoLiked}> {numberOfReposts} re-posts </span>
+                </LeftSideIcons>
+
             </LeftSide>
             <RightSide>
                 <AuthorName>
-                    {postOwner} <img src={trashCan} /> <img src={editIcon} onClick={handleEditClick} />
+                    {postOwner}
+                    <div>
+                        <img src={editIcon} onClick={handleEditClick} />
+                        <img src={trashCan} />
+                    </div>
+
                 </AuthorName>
                 {editMode ? (
                     <EditDescriptionInput
@@ -114,7 +134,7 @@ const PostContainer = styled.div`
     margin-bottom: 14px;
     
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
 `;
 
@@ -124,16 +144,29 @@ const AuthorName = styled.h1`
     font-size: 19px;
     color: #FFF;
 
-    img {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    div {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+    img:nth-child(2) {
         width: 14px;
         height: 14px;
         float: right;
         margin-left: 5px;
+        
     }
 
-    img:nth-child(2) {
+    img {
         width: 23px;
         height: 23px;
+        cursor: pointer;
     }
 `;
 
@@ -141,7 +174,8 @@ const PostDescription = styled.p`
     font-family: 'Lato', sans-serif;
     font-size: 17px;
     color: #B7B7B7;
-
+    width: 100%;
+    overflow: hidden;
     span {
         font-weight: bold;
         color: #FFF;
@@ -150,7 +184,7 @@ const PostDescription = styled.p`
 
 const LeftSide = styled.div`
     box-sizing: border-box;
-    width: 60px;
+    width: 80px;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -159,19 +193,33 @@ const LeftSide = styled.div`
     justify-content: flex-start;
     align-items: center;
     padding: 10px;
+    padding-left: 30px;
     img{
         width: 50px;
         height: 50px;
         border-radius: 100%;
     }
+    
+`
+const LeftSideIcons = styled.div`
+    width: 150%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
     ion-icon {
         color: ${props => props.liked ? 'red' : 'white'};
-        font-size: 40px;
+        font-size: 20px;
+        cursor: pointer;
     }
     span {
+        color: #FFFFFF;
         font-family: Lato;
-        color: white;
-        font-size: 15px;
+        font-size: 11px;
+        font-weight: 400;
+        line-height: 13px;
+        letter-spacing: 0em;
+        text-align: center;
     }
 `
 const RightSide = styled.div`
@@ -182,7 +230,7 @@ const RightSide = styled.div`
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    width: 100%;
+    width: 85%;
     height: 100%;
     h1 {
         font-family: Lato;

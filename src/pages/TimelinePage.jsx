@@ -21,7 +21,7 @@ export default function TimelinePage(props) {
     const [post, setPost] = useState({})
     const [isButtonDisabled, setIsButtonDisabled] = useState(false)
     const [userImage, setUserImage] = useState(undefined);
-    const [timelinePosts, setTimelinePosts] = useState(undefined);
+    const [timelinePosts, setTimelinePosts] = useState([]);
     const [userHasFriends, setUserHasFriends] = useState(false);
 
     useEffect(() => {
