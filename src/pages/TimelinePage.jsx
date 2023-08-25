@@ -14,7 +14,7 @@ import apiUser from "../services/apiUser";
 import FollowButton from "../components/FollowButton";
 
 
-export default function HomePage(props) {
+export default function TimelinePage(props) {
     const { trendingHashtags, setTrendingHashtags, setPosts } = props;
     const { user } = useContext(UserContext)
     const navigate = useNavigate()

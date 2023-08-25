@@ -5,6 +5,7 @@ import editIcon from "../assets/dashicons_edit.png";
 import trashCan from "../assets/trashcan.png";
 import axios from "axios";
 import { UserContext } from "../contexts/userContext";
+import apiPosts from "../services/apiPosts";
 
 export default function Post(props) {
     const { hashtags, likedByViwer, photoUrl, numberOfLikes, postDescription, postId, postOwner, postUrl, whoLiked } = props.post;
@@ -16,9 +17,22 @@ export default function Post(props) {
 
     function handleLike() {
         if (!liked) {
-            setLikesCount(likesCount + 1);
+            apiPosts.likePost(user.token, postId)
+                .then(() => {
+                    setLikesCount(likesCount + 1);
+                })
+                .catch((err) => {
+                    console.log(err.response.data);
+                });
+
         } else {
-            setLikesCount(likesCount - 1);
+            apiPosts.dislikePost(user.token, postId)
+                .then(() => {
+                    setLikesCount(likesCount - 1);
+                })
+                .catch((err) => {
+                    console.log(err.response.data);
+                });
         }
 
         setLiked(!liked);
