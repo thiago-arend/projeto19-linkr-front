@@ -138,8 +138,8 @@ export default function Post(props) {
                         Do you want to re-post this link?
                     </span>
                     <div>
-                        <button onClick={() => openRepostModal()} > No, cancel </button>
-                        <button onClick={() => addRepost(postId)}> Yes, share! </button>
+                        <button data-test="cancel" onClick={() => openRepostModal()} > No, cancel </button>
+                        <button data-test="confirm" onClick={() => addRepost(postId)}> Yes, share! </button>
                     </div>
                 </div>
             </RepostModal>
@@ -154,13 +154,13 @@ export default function Post(props) {
                         <ion-icon data-test="like-btn" onClick={handleLike} liked={liked} name={liked ? "heart" : "heart-outline"}></ion-icon>
                         <span data-test="counter" onClick={showWhoLiked}> {likesCount} likes </span>
                     </LeftSideIcons>
-                    <LeftSideIcons onClick={() => openComments()}>
+                    <LeftSideIcons data-test="comment-btn" onClick={() => openComments()}>
                         <ion-icon name="chatbubbles-outline"></ion-icon>
-                        <span> {CommentsCount} comments </span>
+                        <span data-test="comment-counter"> {CommentsCount} comments </span>
                     </LeftSideIcons>
                     <LeftSideIcons>
-                        <ion-icon onClick={() => openRepostModal()} name="git-compare-outline"></ion-icon>
-                        <span> {repostsCount} re-posts </span>
+                        <ion-icon data-test="repost-btn" onClick={() => openRepostModal()} name="git-compare-outline"></ion-icon>
+                        <span data-test="repost-counter"> {repostsCount} re-posts </span>
                     </LeftSideIcons>
                 </LeftSide>
                 <RightSide>
@@ -185,12 +185,12 @@ export default function Post(props) {
                     )}
                     {editMode && <button onClick={handleSaveEdit}>Save</button>}
                 </RightSide>
-                <CommentsContainer escondido={!commentSection}>
+                <CommentsContainer data-test="comment-box" escondido={!commentSection}>
                     {(Comments.length !== 0 && Comments[0].id !== null)
                         ?
                         Comments.map(comentario => {
                             return (
-                                <div key={comentario.id}>
+                                <div data-test="comment" key={comentario.id}>
                                     <img src={comentario.commentatorPfp} alt="" />
                                     <div>
                                         <h1> {comentario.commentatorName} </h1>
@@ -204,13 +204,13 @@ export default function Post(props) {
                     }
                     <NewCommentContainer onSubmit={addComment}>
                         <img src={avatar} alt="" />
-                        <input 
+                        <input  data-test="comment-input"
                             type="text"
                             placeholder="write a comment..."
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
                         />
-                        <ion-icon onClick={() => addComment2()} name="paper-plane-outline"></ion-icon>
+                        <ion-icon data-test="comment-submit"  onClick={() => addComment2()} name="paper-plane-outline"></ion-icon>
                     </NewCommentContainer>
                 </CommentsContainer>
                 
