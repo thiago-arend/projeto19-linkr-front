@@ -54,7 +54,7 @@ export default function TimelinePage(props) {
 
         apiUser.verifyFriendsExistence(user.token)
             .then((res) => {
-                console.log(res.data);
+                /*console.log(res.data);*/
                 setUserHasFriends(res.data);
             })
             .catch((err) => {
@@ -255,6 +255,9 @@ const TimelineContainer = styled.div`
 
 const PostsContainer = styled.div`
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 `;
 
 const ContentContainer = styled.div`

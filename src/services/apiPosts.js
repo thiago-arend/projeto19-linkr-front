@@ -28,5 +28,24 @@ function dislikePost(token, postId) {
     return promise;
 }
 
-const apiPosts= { getTimelinePosts, likePost, dislikePost };
+function addRepost(token, postId) {
+    const auth = {
+        headers: { Authorization: `Bearer ${token}` }
+    };
+
+    const promise = axios.post(`${process.env.REACT_APP_API_URL}/respost/${postId}`, {}, auth);
+    return promise;
+}
+
+function addComment(token, postId, comment) {
+    const auth = {
+        headers: { Authorization: `Bearer ${token}` }
+    };
+
+    const promise = axios.post(`${process.env.REACT_APP_API_URL}/post/${postId}/comment`,
+    {comment: comment}, auth);
+    return promise;
+}
+
+const apiPosts= { getTimelinePosts, likePost, dislikePost, addRepost, addComment };
 export default apiPosts;
