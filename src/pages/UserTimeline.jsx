@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import apiAuth from "../services/apiAuth";
 import Navbar from "../components/Navbar";
-import apiUserTimeline from "../services/apiUserTimeline";
+import apiPost from "../services/apiPost";
 
 
 export default function HomePage(props) {
@@ -19,19 +19,8 @@ export default function HomePage(props) {
     const [post, setPost] = useState({})
     const [isButtonDisabled, setIsButtonDisabled] = useState(false)
     const [userImage, setUserImage] = useState(undefined);
-    const [userData, setUserData] = useState({})
+    const [timelinePost, setTimelinePost] = useState([])
 
-
-    // {
-    //     "userId": 3,
-    //     "postId": 7,
-    //     "postUrl": "https://efeitojoule.com/2009/04/fisica-espelhos-optica-espelhos-fisica/%22, 
-    //     "postDescription": "Olhem que legal",
-    //     "numberOfLikes": 1,
-    //     "likedByViewer": false
-    //     },
-
-    
     useEffect(() => {
         if (!user) return navigate("/")
 
@@ -51,12 +40,16 @@ export default function HomePage(props) {
                 console.log(err.response.data);
             });
 
-            apiUserTimeline.getUserTimeline()
+
+        ///para pegar os posts dos usuários
+        apiPost.getPostbyId(user.token)
             .then((res) => {
-                setUserData(res.data);
+                const response = res.data
+                setTimelinePost(response);
+                console.log('response: ', response)
             })
             .catch((err) => {
-                console.log(err.response.data);
+                console.log('ERROR GETPOST:', err.response.data);
             });
     }, []);
 
@@ -83,9 +76,18 @@ export default function HomePage(props) {
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
+
+
+            ///dados para serem enviados para a rota de post na timeline
+            const postData = {
+                userId: user.userId,
+                description: post.description,
+                url: post.url
+            }
+
             const response = await axios.post(
                 `${process.env.REACT_APP_API_URL}/timeline`,
-                { ...post, userId: user.userId },
+                postData,
                 config
             );
 
@@ -97,16 +99,18 @@ export default function HomePage(props) {
     }
 
 
+
+
     return (
         <>
             <Navbar />
             <PageContainer>
 
                 <SuperContent>
-                    <TimelineTitle>timeline</TimelineTitle>
+                    <TimelineTitle><AvatarContainer><img src={post.postUrl ? post.postUrl : defaultAvatar} /></AvatarContainer> {post.postOwner}</TimelineTitle>
                     <ContentContainer>
                         <TimelineContainer>
-                            <PublishContainer>
+                            {/* <PublishContainer>
                                 <AvatarContainer><img src={userImage ? userImage : defaultAvatar} /></AvatarContainer>
                                 <PostCreationContainer>
                                     <h1>What are you going to share today?</h1>
@@ -130,27 +134,28 @@ export default function HomePage(props) {
                                         <button
                                             type="submit"
                                             disabled={isButtonDisabled}
+                                            onSubmit={publishPost}
                                         >{isButtonDisabled ? "Publishing..." : "Publish"}
                                         </button>
                                     </form>
                                 </PostCreationContainer>
-                            </PublishContainer>
+                            </PublishContainer> */}
                             <PostsContainer>
-                                <Post hashtags={['agro', 'comida']} post={
-                                      {
-                                        id: 4,
-                                        url: "http://gtrg.gt.gt",
-                                        description: "post qualquer",
-                                        username: "marina",
-                                        photoUrl: "http://grg.grg",
-                                        likeCount: "3",
-                                        whoLikedList: [
-                                          "thiago",
-                                          "marina",
-                                          "andre"
-                                        ]
-                                      }
-                                } />
+                                {timelinePost.map((post) => (
+                                    <Post
+                                        hashtags={post.hashtags}
+                                        post={{
+                                            id: post.postId,
+                                            url: post.postUrl,
+                                            description: post.postDescription,
+                                            username: post.postOwner,
+                                            photoUrl: post.photoUrl,
+                                            likeCount: post.numberOfLikes,
+                                            whoLikedList: post.whoLiked,
+                                        }}
+                                        key={post.postId}
+                                    />
+                                ))}
                             </PostsContainer>
                         </TimelineContainer>
                         <TrendingContainer>

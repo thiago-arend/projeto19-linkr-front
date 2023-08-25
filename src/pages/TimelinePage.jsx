@@ -19,7 +19,7 @@ export default function HomePage(props) {
     const [post, setPost] = useState({})
     const [isButtonDisabled, setIsButtonDisabled] = useState(false)
     const [userImage, setUserImage] = useState(undefined);
-    const [timelinePost, setTimelinePost] = useState({})
+    const [timelinePost, setTimelinePost] = useState([])
 
     useEffect(() => {
         if (!user) return navigate("/")
@@ -44,12 +44,12 @@ export default function HomePage(props) {
         ///para pegar os posts dos usuários
         apiPost.getPost(user.token)
             .then((res) => {
-                /*console.log(res.data)*/
                 const response = res.data
-                setTimelinePost({...timelinePost, response});
+                setTimelinePost(response);
+                console.log('response: ',response)
             })
             .catch((err) => {
-                console.log('ERROR GETPOST:',err.response.data);
+                console.log('ERROR GETPOST:', err.response.data);
             });
     }, []);
 
@@ -96,7 +96,7 @@ export default function HomePage(props) {
         } catch (err) {
             alert("There was an error when publishing your link!");
         }
-    }    
+    }
 
 
 
@@ -141,21 +141,21 @@ export default function HomePage(props) {
                                 </PostCreationContainer>
                             </PublishContainer>
                             <PostsContainer>
-                                <Post hashtags={['agro', 'comida']} post={
-                                    {
-                                        id: 4,
-                                        url: "http://gtrg.gt.gt",
-                                        description: "post qualquer",
-                                        username: "marina",
-                                        photoUrl: "http://grg.grg",
-                                        likeCount: "3",
-                                        whoLikedList: [
-                                            "thiago",
-                                            "marina",
-                                            "andre"
-                                        ]
-                                    }
-                                } />
+                                {timelinePost.map((post) => (
+                                    <Post
+                                        hashtags={post.hashtags}
+                                        post={{
+                                            id: post.postId,
+                                            url: post.postUrl,
+                                            description: post.postDescription,
+                                            username: post.postOwner,
+                                            photoUrl: post.photoUrl,
+                                            likeCount: post.numberOfLikes,
+                                            whoLikedList: post.whoLiked,
+                                        }}
+                                        key={post.postId}
+                                    />
+                                ))}
                             </PostsContainer>
                         </TimelineContainer>
                         <TrendingContainer>
